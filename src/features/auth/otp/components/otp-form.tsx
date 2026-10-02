@@ -1,34 +1,162 @@
-import { useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
-import { showSubmittedData } from '@/lib/show-submitted-data'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-  InputOTPSeparator,
-} from '@/components/ui/input-otp'
+import { type HTMLAttributes, useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
+import { useForgotPasswordStore } from '@/stores/forgot-password-store.ts';
+import { useSignUpStore } from '@/stores/sign-up-store.ts';
+import { handleServerError } from '@/lib/handle-server-error.ts';
+import { showSubmittedData } from '@/lib/show-submitted-data';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const formSchema = z.object({
   otp: z
     .string()
-    .min(6, 'Please enter the 6-digit code.')
-    .max(6, 'Please enter the 6-digit code.'),
+    .min(6, '请输入六位数字验证码。')
+    .max(6, '请输入六位数字验证码。'),
 })
 
-type OtpFormProps = React.HTMLAttributes<HTMLFormElement>
+type OtpFormProps = HTMLAttributes<HTMLFormElement>
 
 export function OtpForm({ className, ...props }: OtpFormProps) {
   const navigate = useNavigate()
@@ -42,14 +170,66 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const otp = form.watch('otp')
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  const verifyOtp = useSignUpStore((state) => state.verifyOtp)
+  const clearVerifyOtp = useSignUpStore((state) => state.clearVerifyOtp)
+
+  const updateUser = useForgotPasswordStore((state) => state.updateUser)
+  const setOtp = useForgotPasswordStore((state) => state.setOtp)
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
     showSubmittedData(data)
 
-    setTimeout(() => {
-      setIsLoading(false)
-      navigate({ to: '/' })
-    }, 1000)
+    toast.promise(
+      async () => {
+        if (verifyOtp) {
+          const result = await verifyOtp({
+            token: data.otp,
+          })
+
+          clearVerifyOtp()
+          await navigate({
+            to: '/',
+            replace: true,
+          })
+          return {
+            type: 'signup' as const,
+            result,
+          }
+        }
+
+        if (updateUser) {
+          setOtp(data.otp)
+
+          await navigate({
+            to: '/reset-password',
+            replace: true,
+          })
+          return {
+            type: 'forgot-password' as const,
+          }
+        }
+        
+        throw new Error('验证码会话已失效，请重新获取验证码。')
+      },
+      {
+        loading: '验证中...',
+        success: (result) => {
+          if (result.type === 'signup') {
+            return '验证成功。'
+          }
+
+          return '请输入新密码。'
+        },
+        error: (error) => {
+          handleServerError(error)
+          return '操作失败，请重试。'
+        },
+        finally: () => {
+          setIsLoading(false)
+        },
+      }
+    )
   }
 
   return (
@@ -92,7 +272,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
           )}
         />
         <Button className='mt-2' disabled={otp.length < 6 || isLoading}>
-          Verify
+          验证
         </Button>
       </form>
     </Form>

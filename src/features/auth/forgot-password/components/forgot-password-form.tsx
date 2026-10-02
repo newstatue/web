@@ -1,21 +1,20 @@
-import { useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
-import { ArrowRight, Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
-import { sleep, cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { type HTMLAttributes, useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
+import { ArrowRight, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useForgotPasswordStore } from '@/stores/forgot-password-store.ts';
+import { cloud } from '@/lib/cloudbase.tsx';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { handleServerError } from '@/lib/handle-server-error.ts'
+
+
+
 
 const formSchema = z.object({
   email: z.email({
@@ -26,7 +25,7 @@ const formSchema = z.object({
 export function ForgotPasswordForm({
   className,
   ...props
-}: React.HTMLAttributes<HTMLFormElement>) {
+}: HTMLAttributes<HTMLFormElement>) {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -35,19 +34,47 @@ export function ForgotPasswordForm({
     defaultValues: { email: '' },
   })
 
+  const setUpdateUser = useForgotPasswordStore((state) => state.setUpdateUser)
+
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
-    toast.promise(sleep(2000), {
-      loading: 'Sending email...',
-      success: () => {
-        setIsLoading(false)
+    toast.promise(
+      async () => {
+        const { data: d, error } = await cloud
+          .auth()
+          .resetPasswordForEmail(data.email)
+        if (error) {
+          throw error
+        }
+        if (!d?.updateUser) {
+          throw new Error('未获取到密码重置验证方法。')
+        }
+
+        setUpdateUser(d.updateUser)
+
         form.reset()
-        navigate({ to: '/otp' })
-        return `Email sent to ${data.email}`
+
+        await navigate({
+          to: '/otp',
+        })
+
+        return data.email
       },
-      error: 'Error',
-    })
+      {
+        loading: '发送邮件中...',
+        success: (email) => {
+          return `邮件已发送到 ${email}。`
+        },
+        error: (error) => {
+          handleServerError(error)
+          return '发送邮件失败。'
+        },
+        finally: () => {
+          setIsLoading(false)
+        },
+      }
+    )
   }
 
   return (
@@ -62,7 +89,7 @@ export function ForgotPasswordForm({
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>邮箱</FormLabel>
               <FormControl>
                 <Input placeholder='name@example.com' {...field} />
               </FormControl>
@@ -71,7 +98,7 @@ export function ForgotPasswordForm({
           )}
         />
         <Button className='mt-2' disabled={isLoading}>
-          Continue
+          继续
           {isLoading ? <Loader2 className='animate-spin' /> : <ArrowRight />}
         </Button>
       </form>

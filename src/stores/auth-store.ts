@@ -1,53 +1,42 @@
-import { create } from 'zustand'
-import { getCookie, setCookie, removeCookie } from '@/lib/cookies'
+import { create } from 'zustand';
+import { cloud } from '@/lib/cloudbase';
 
-const ACCESS_TOKEN = 'thisisjustarandomstring'
 
-interface AuthUser {
-  accountNo: string
-  email: string
-  role: string[]
-  exp: number
-}
+
+
+
+
+const auth = cloud.auth()
+
+type CloudBaseUser = Awaited<ReturnType<typeof auth.getCurrentUser>>
 
 interface AuthState {
   auth: {
-    user: AuthUser | null
-    setUser: (user: AuthUser | null) => void
-    accessToken: string
-    setAccessToken: (accessToken: string) => void
-    resetAccessToken: () => void
-    reset: () => void
+    user: CloudBaseUser
+    setUser: (user: CloudBaseUser) => void
+    loadUser: () => Promise<void>
+    getAccessToken: () => Promise<string | null>
+    reset: () => Promise<void>
   }
 }
 
 export const useAuthStore = create<AuthState>()((set) => {
-  const cookieState = getCookie(ACCESS_TOKEN)
-  const initToken = cookieState ? JSON.parse(cookieState) : ''
   return {
     auth: {
       user: null,
-      setUser: (user) =>
-        set((state) => ({ ...state, auth: { ...state.auth, user } })),
-      accessToken: initToken,
-      setAccessToken: (accessToken) =>
-        set((state) => {
-          setCookie(ACCESS_TOKEN, JSON.stringify(accessToken))
-          return { ...state, auth: { ...state.auth, accessToken } }
-        }),
-      resetAccessToken: () =>
-        set((state) => {
-          removeCookie(ACCESS_TOKEN)
-          return { ...state, auth: { ...state.auth, accessToken: '' } }
-        }),
-      reset: () =>
-        set((state) => {
-          removeCookie(ACCESS_TOKEN)
-          return {
-            ...state,
-            auth: { ...state.auth, user: null, accessToken: '' },
-          }
-        }),
+      setUser: (user) => set((state) => ({ auth: { ...state.auth, user } })),
+      loadUser: async () => {
+        const user = await auth.getCurrentUser()
+        set((state) => ({ auth: { ...state.auth, user } }))
+      },
+      getAccessToken: async () => {
+        const { accessToken } = await auth.getAccessToken()
+        return accessToken || null
+      },
+      reset: async () => {
+        await auth.signOut()
+        set((state) => ({ auth: { ...state.auth, user: null } }))
+      },
     },
   }
 })
