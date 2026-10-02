@@ -1,0 +1,3 @@
+[tools]
+pnpm = "latest"
+"pypi:commitizen" = "latest"
