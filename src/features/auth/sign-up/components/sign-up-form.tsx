@@ -61,7 +61,17 @@ export function SignUpForm({
         })
 
         if (error) {
-          throw error
+          throw new Error("创建账户失败")
+        }
+
+        const { error: otpError } =
+          await authClient.emailOtp.sendVerificationOtp({
+            email: data.email,
+            type: "email-verification",
+          })
+
+        if (otpError) {
+          throw new Error("验证码发送失败")
         }
 
         await navigate({
@@ -76,10 +86,9 @@ export function SignUpForm({
       },
       {
         loading: "创建账户中...",
-        success: (email) => {
-          return `验证码已发送到 ${email}，请完成邮箱验证。`
-        },
-        error: "创建账户失败。",
+        success: (email) => `验证码已发送到 ${email}，请完成邮箱验证。`,
+        error: (error) =>
+          error instanceof Error ? error.message : "操作失败。",
         finally: () => {
           setIsLoading(false)
         },
