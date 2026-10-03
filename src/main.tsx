@@ -1,19 +1,23 @@
-import { StrictMode } from 'react';
-import ReactDOM from 'react-dom/client';
-import { AxiosError } from 'axios';
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { toast } from 'sonner';
-import { useAuthStore } from '@/stores/auth-store';
-import { handleServerError } from '@/lib/handle-server-error';
-import { DirectionProvider } from './context/direction-provider';
-import { FontProvider } from './context/font-provider';
-import { ThemeProvider } from './context/theme-provider';
-import { cloud, CloudContext } from './lib/cloudbase'
+import { StrictMode } from "react"
+import ReactDOM from "react-dom/client"
+import { AxiosError } from "axios"
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query"
+import { RouterProvider, createRouter } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { useAuthStore } from "@/stores/auth-store"
+import { handleServerError } from "@/lib/handle-server-error"
+import { DirectionProvider } from "./context/direction-provider"
+import { FontProvider } from "./context/font-provider"
+import { ThemeProvider } from "./context/theme-provider"
+import { cloud, CloudContext } from "./lib/cloudbase"
 // Generated Routes
-import { routeTree } from './routeTree.gen';
+import { routeTree } from "./routeTree.gen"
 // Styles
-import './styles/index.css'
+import "./styles/index.css"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,7 +43,7 @@ const queryClient = new QueryClient({
 
         if (error instanceof AxiosError) {
           if (error.response?.status === 304) {
-            toast.error('Content not modified!')
+            toast.error("Content not modified!")
           }
         }
       },
@@ -49,16 +53,16 @@ const queryClient = new QueryClient({
     onError: (error) => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
-          toast.error('Session expired!')
+          toast.error("Session expired!")
           useAuthStore.getState().auth.reset()
           const redirect = `${router.history.location.href}`
-          router.navigate({ to: '/sign-in', search: { redirect } })
+          router.navigate({ to: "/sign-in", search: { redirect } })
         }
         if (error.response?.status === 500) {
-          toast.error('Internal Server Error!')
+          toast.error("Internal Server Error!")
           // Only navigate to error page in production to avoid disrupting HMR in development
           if (import.meta.env.PROD) {
-            router.navigate({ to: '/500' })
+            router.navigate({ to: "/500" })
           }
         }
         if (error.response?.status === 403) {
@@ -73,32 +77,32 @@ const queryClient = new QueryClient({
 const router = createRouter({
   routeTree,
   context: { queryClient },
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
 })
 
 // Register the router instance for type safety
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router
   }
 }
 
 // Render the app
-const rootElement = document.getElementById('root')!
+const rootElement = document.getElementById("root")!
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <CloudContext.Provider value={cloud}>
-        <ThemeProvider>
-          <FontProvider>
-            <DirectionProvider>
-              <RouterProvider router={router} />
-            </DirectionProvider>
-          </FontProvider>
-        </ThemeProvider>
+          <ThemeProvider>
+            <FontProvider>
+              <DirectionProvider>
+                <RouterProvider router={router} />
+              </DirectionProvider>
+            </FontProvider>
+          </ThemeProvider>
         </CloudContext.Provider>
       </QueryClientProvider>
     </StrictMode>

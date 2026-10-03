@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -39,20 +39,20 @@ export function getPageNumbers(currentPage: number, totalPages: number) {
       for (let i = 2; i <= 4; i++) {
         rangeWithDots.push(i)
       }
-      rangeWithDots.push('...', totalPages)
+      rangeWithDots.push("...", totalPages)
     } else if (currentPage >= totalPages - 2) {
       // Near the end: [1] ... [7] [8] [9] [10]
-      rangeWithDots.push('...')
+      rangeWithDots.push("...")
       for (let i = totalPages - 3; i <= totalPages; i++) {
         rangeWithDots.push(i)
       }
     } else {
       // In the middle: [1] ... [4] [5] [6] ... [10]
-      rangeWithDots.push('...')
+      rangeWithDots.push("...")
       for (let i = currentPage - 1; i <= currentPage + 1; i++) {
         rangeWithDots.push(i)
       }
-      rangeWithDots.push('...', totalPages)
+      rangeWithDots.push("...", totalPages)
     }
   }
 
@@ -65,11 +65,11 @@ export function getPageNumbers(currentPage: number, totalPages: number) {
  */
 export function getDisplayNameInitials(displayName: string): string {
   const parts = displayName.trim().split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return '?'
+  if (parts.length === 0) return "?"
   if (parts.length === 1) {
     return parts[0].slice(0, 2).toUpperCase()
   }
-  const first = parts[0][0] ?? ''
-  const last = parts[parts.length - 1]?.[0] ?? ''
+  const first = parts[0][0] ?? ""
+  const last = parts[parts.length - 1]?.[0] ?? ""
   return (first + last).toUpperCase()
 }

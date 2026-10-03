@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { type Table } from '@tanstack/react-table'
-import { AlertTriangle } from 'lucide-react'
-import { toast } from 'sonner'
-import { sleep } from '@/lib/utils'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { useState } from "react"
+import { type Table } from "@tanstack/react-table"
+import { AlertTriangle } from "lucide-react"
+import { toast } from "sonner"
+import { sleep } from "@/lib/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ConfirmDialog } from "@/components/confirm-dialog"
 
 type UserMultiDeleteDialogProps<TData> = {
   open: boolean
@@ -16,14 +16,14 @@ type UserMultiDeleteDialogProps<TData> = {
   table: Table<TData>
 }
 
-const CONFIRM_WORD = 'DELETE'
+const CONFIRM_WORD = "DELETE"
 
 export function UsersMultiDeleteDialog<TData>({
   open,
   onOpenChange,
   table,
 }: UserMultiDeleteDialogProps<TData>) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("")
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
 
@@ -36,15 +36,15 @@ export function UsersMultiDeleteDialog<TData>({
     onOpenChange(false)
 
     toast.promise(sleep(2000), {
-      loading: 'Deleting users...',
+      loading: "Deleting users...",
       success: () => {
-        setValue('')
+        setValue("")
         table.resetRowSelection()
         return `Deleted ${selectedRows.length} ${
-          selectedRows.length > 1 ? 'users' : 'user'
+          selectedRows.length > 1 ? "users" : "user"
         }`
       },
-      error: 'Error',
+      error: "Error",
     })
   }
 
@@ -52,34 +52,34 @@ export function UsersMultiDeleteDialog<TData>({
     <ConfirmDialog
       open={open}
       onOpenChange={onOpenChange}
-      form='users-multi-delete-form'
+      form="users-multi-delete-form"
       disabled={value.trim() !== CONFIRM_WORD}
       title={
-        <span className='text-destructive'>
+        <span className="text-destructive">
           <AlertTriangle
-            className='me-1 inline-block stroke-destructive'
+            className="me-1 inline-block stroke-destructive"
             size={18}
-          />{' '}
-          Delete {selectedRows.length}{' '}
-          {selectedRows.length > 1 ? 'users' : 'user'}
+          />{" "}
+          Delete {selectedRows.length}{" "}
+          {selectedRows.length > 1 ? "users" : "user"}
         </span>
       }
       desc={
         <form
-          id='users-multi-delete-form'
+          id="users-multi-delete-form"
           onSubmit={(e) => {
             e.preventDefault()
             handleDelete()
           }}
-          className='space-y-4'
+          className="space-y-4"
         >
-          <p className='mb-2'>
+          <p className="mb-2">
             Are you sure you want to delete the selected users? <br />
             This action cannot be undone.
           </p>
 
-          <Label className='my-4 flex flex-col items-start gap-1.5'>
-            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
+          <Label className="my-4 flex flex-col items-start gap-1.5">
+            <span className="">Confirm by typing "{CONFIRM_WORD}":</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -88,7 +88,7 @@ export function UsersMultiDeleteDialog<TData>({
             />
           </Label>
 
-          <Alert variant='destructive'>
+          <Alert variant="destructive">
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               Please be careful, this operation can not be rolled back.
@@ -96,7 +96,7 @@ export function UsersMultiDeleteDialog<TData>({
           </Alert>
         </form>
       }
-      confirmText='Delete'
+      confirmText="Delete"
       destructive
     />
   )

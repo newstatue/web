@@ -1,10 +1,5 @@
-import { create } from 'zustand';
-import { cloud } from '@/lib/cloudbase';
-
-
-
-
-
+import { create } from "zustand"
+import { cloud } from "@/lib/cloudbase"
 
 const auth = cloud.auth()
 

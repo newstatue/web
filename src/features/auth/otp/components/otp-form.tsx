@@ -1,159 +1,35 @@
-import { type HTMLAttributes, useState } from 'react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from '@tanstack/react-router';
-import { toast } from 'sonner';
-import { useForgotPasswordStore } from '@/stores/forgot-password-store.ts';
-import { useSignUpStore } from '@/stores/sign-up-store.ts';
-import { handleServerError } from '@/lib/handle-server-error.ts';
-import { showSubmittedData } from '@/lib/show-submitted-data';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import { type HTMLAttributes, useState } from "react"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { useForgotPasswordStore } from "@/stores/forgot-password-store.ts"
+import { useSignUpStore } from "@/stores/sign-up-store.ts"
+import { handleServerError } from "@/lib/handle-server-error.ts"
+import { showSubmittedData } from "@/lib/show-submitted-data"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+} from "@/components/ui/input-otp"
 
 const formSchema = z.object({
   otp: z
     .string()
-    .min(6, '请输入六位数字验证码。')
-    .max(6, '请输入六位数字验证码。'),
+    .min(6, "请输入六位数字验证码。")
+    .max(6, "请输入六位数字验证码。"),
 })
 
 type OtpFormProps = HTMLAttributes<HTMLFormElement>
@@ -164,11 +40,11 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { otp: '' },
+    defaultValues: { otp: "" },
   })
 
   // eslint-disable-next-line react-hooks/incompatible-library
-  const otp = form.watch('otp')
+  const otp = form.watch("otp")
 
   const verifyOtp = useSignUpStore((state) => state.verifyOtp)
   const clearVerifyOtp = useSignUpStore((state) => state.clearVerifyOtp)
@@ -189,11 +65,11 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
 
           clearVerifyOtp()
           await navigate({
-            to: '/',
+            to: "/",
             replace: true,
           })
           return {
-            type: 'signup' as const,
+            type: "signup" as const,
             result,
           }
         }
@@ -202,28 +78,28 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
           setOtp(data.otp)
 
           await navigate({
-            to: '/reset-password',
+            to: "/reset-password",
             replace: true,
           })
           return {
-            type: 'forgot-password' as const,
+            type: "forgot-password" as const,
           }
         }
-        
-        throw new Error('验证码会话已失效，请重新获取验证码。')
+
+        throw new Error("验证码会话已失效，请重新获取验证码。")
       },
       {
-        loading: '验证中...',
+        loading: "验证中...",
         success: (result) => {
-          if (result.type === 'signup') {
-            return '验证成功。'
+          if (result.type === "signup") {
+            return "验证成功。"
           }
 
-          return '请输入新密码。'
+          return "请输入新密码。"
         },
         error: (error) => {
           handleServerError(error)
-          return '操作失败，请重试。'
+          return "操作失败，请重试。"
         },
         finally: () => {
           setIsLoading(false)
@@ -236,15 +112,15 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('grid gap-2', className)}
+        className={cn("grid gap-2", className)}
         {...props}
       >
         <FormField
           control={form.control}
-          name='otp'
+          name="otp"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='sr-only'>One-Time Password</FormLabel>
+              <FormLabel className="sr-only">One-Time Password</FormLabel>
               <FormControl>
                 <InputOTP
                   maxLength={6}
@@ -271,7 +147,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
             </FormItem>
           )}
         />
-        <Button className='mt-2' disabled={otp.length < 6 || isLoading}>
+        <Button className="mt-2" disabled={otp.length < 6 || isLoading}>
           验证
         </Button>
       </form>

@@ -1,5 +1,5 @@
-import { AxiosError } from 'axios'
-import { toast } from 'sonner'
+import { AxiosError } from "axios"
+import { toast } from "sonner"
 
 export function handleServerError(error: unknown) {
   if (import.meta.env.DEV) {
@@ -7,20 +7,20 @@ export function handleServerError(error: unknown) {
     console.log(error)
   }
 
-  let errMsg = 'Something went wrong!'
+  let errMsg = "Something went wrong!"
 
   if (
     error &&
-    typeof error === 'object' &&
-    'status' in error &&
+    typeof error === "object" &&
+    "status" in error &&
     Number(error.status) === 204
   ) {
-    errMsg = 'No content.'
+    errMsg = "No content."
   }
 
   if (error instanceof AxiosError) {
     const title = error.response?.data?.title
-    if (typeof title === 'string' && title.length > 0) {
+    if (typeof title === "string" && title.length > 0) {
       errMsg = title
     }
   }
