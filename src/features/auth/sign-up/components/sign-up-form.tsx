@@ -77,7 +77,7 @@ export function SignUpForm({
       {
         loading: "创建账户中...",
         success: (email) => {
-          return `账户 ${email} 创建成功。`
+          return `验证码已发送到 ${email}，请完成邮箱验证。`
         },
         error: "创建账户失败。",
         finally: () => {

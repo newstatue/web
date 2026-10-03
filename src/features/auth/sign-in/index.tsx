@@ -42,7 +42,7 @@ export function SignIn() {
             >
               服务条款
             </a>{" "}
-            and{" "}
+            和{" "}
             <a
               href="/privacy"
               className="underline underline-offset-4 hover:text-primary"
