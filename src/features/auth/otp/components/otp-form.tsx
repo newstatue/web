@@ -3,9 +3,9 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
+import { Route } from "@/routes/(auth)/otp.tsx"
 import { toast } from "sonner"
-import { useForgotPasswordStore } from "@/stores/forgot-password-store.ts"
-import { useSignUpStore } from "@/stores/sign-up-store.ts"
+import { authClient } from "@/lib/auth-client.ts"
 import { handleServerError } from "@/lib/handle-server-error.ts"
 import { showSubmittedData } from "@/lib/show-submitted-data"
 import { cn } from "@/lib/utils"
@@ -46,41 +46,53 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const otp = form.watch("otp")
 
-  const verifyOtp = useSignUpStore((state) => state.verifyOtp)
-  const clearVerifyOtp = useSignUpStore((state) => state.clearVerifyOtp)
-
-  const updateUser = useForgotPasswordStore((state) => state.updateUser)
-  const setOtp = useForgotPasswordStore((state) => state.setOtp)
+  const { email, type } = Route.useSearch()
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
     showSubmittedData(data)
-
     toast.promise(
       async () => {
-        if (verifyOtp) {
-          const result = await verifyOtp({
-            token: data.otp,
+        if (type === "signup") {
+          const { error } = await authClient.emailOtp.verifyEmail({
+            email,
+            otp: data.otp,
           })
 
-          clearVerifyOtp()
+          if (error) {
+            throw error
+          }
+
           await navigate({
             to: "/",
             replace: true,
           })
+
           return {
             type: "signup" as const,
-            result,
           }
         }
 
-        if (updateUser) {
-          setOtp(data.otp)
+        if (type === "forgot-password") {
+          const { error } = await authClient.emailOtp.checkVerificationOtp({
+            email,
+            otp: data.otp,
+            type: "forget-password",
+          })
+
+          if (error) {
+            throw error
+          }
 
           await navigate({
             to: "/reset-password",
+            search: {
+              email,
+              otp: data.otp,
+            },
             replace: true,
           })
+
           return {
             type: "forgot-password" as const,
           }

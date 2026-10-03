@@ -5,8 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import { useForgotPasswordStore } from "@/stores/forgot-password-store.ts"
-import { cloud } from "@/lib/cloudbase.tsx"
+import { authClient } from "@/lib/auth-client.ts"
 import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -38,38 +37,33 @@ export function ForgotPasswordForm({
     defaultValues: { email: "" },
   })
 
-  const setUpdateUser = useForgotPasswordStore((state) => state.setUpdateUser)
-
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
     toast.promise(
       async () => {
-        const { data: d, error } = await cloud
-          .auth()
-          .resetPasswordForEmail(data.email)
+        const { error } = await authClient.emailOtp.requestPasswordReset({
+          email: data.email,
+        })
         if (error) {
           throw error
         }
-        if (!d?.updateUser) {
-          throw new Error("未获取到密码重置验证方法。")
-        }
-
-        setUpdateUser(d.updateUser)
 
         form.reset()
 
         await navigate({
           to: "/otp",
+          search: {
+            email: data.email,
+            type: "forgot-password",
+          },
         })
 
         return data.email
       },
       {
         loading: "发送邮件中...",
-        success: (email) => {
-          return `邮件已发送到 ${email}。`
-        },
+        success: (email) => `邮件已发送到 ${email}。`,
         error: (error) => {
           handleServerError(error)
           return "发送邮件失败。"

@@ -3,9 +3,10 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
+import { Route } from "@/routes/(auth)/reset-password"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import { useForgotPasswordStore } from "@/stores/forgot-password-store.ts"
+import { authClient } from "@/lib/auth-client.ts"
 import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -39,10 +40,6 @@ export function ResetPasswordForm({
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
-  const updateUser = useForgotPasswordStore((state) => state.updateUser)
-  const otp = useForgotPasswordStore((state) => state.otp)
-  const clear = useForgotPasswordStore((state) => state.clear)
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,28 +48,29 @@ export function ResetPasswordForm({
     },
   })
 
+  const { email, otp } = Route.useSearch()
+
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
 
     toast.promise(
       async () => {
-        if (!updateUser || !otp) {
-          throw new Error("密码重置会话已失效，请重新获取验证码。")
-        }
-
-        const result = await updateUser({
-          nonce: otp,
+        const { error } = await authClient.emailOtp.resetPassword({
+          email,
+          otp,
           password: data.password,
         })
 
-        clear()
+        if (error) {
+          throw error
+        }
 
         await navigate({
           to: "/sign-in",
           replace: true,
         })
 
-        return result
+        return true
       },
       {
         loading: "正在重置密码...",

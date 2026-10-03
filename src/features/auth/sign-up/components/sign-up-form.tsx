@@ -5,8 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
 import { Loader2, UserPlus } from "lucide-react"
 import { toast } from "sonner"
-import { useSignUpStore } from "@/stores/sign-up-store.ts"
-import { cloud } from "@/lib/cloudbase.tsx"
+import { authClient } from "@/lib/auth-client.ts"
 import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -41,7 +40,6 @@ export function SignUpForm({
 }: HTMLAttributes<HTMLFormElement>) {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
-  const setVerifyOtp = useSignUpStore((state) => state.setVerifyOtp)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +55,8 @@ export function SignUpForm({
 
     toast.promise(
       async () => {
-        const { data: d, error } = await cloud.auth().signUp({
+        const { error } = await authClient.signUp.email({
+          name: data.email.split("@")[0],
           email: data.email,
           password: data.password,
         })
@@ -66,13 +65,12 @@ export function SignUpForm({
           throw error
         }
 
-        if (!d.verifyOtp) {
-          throw new Error("未获取到验证码验证方法")
-        }
-
-        setVerifyOtp(d.verifyOtp)
         await navigate({
           to: "/otp",
+          search: {
+            email: data.email,
+            type: "signup",
+          },
         })
 
         return data.email

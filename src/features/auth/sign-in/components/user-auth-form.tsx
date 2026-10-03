@@ -5,8 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { Loader2, LogIn } from "lucide-react"
 import { toast } from "sonner"
-import { useAuthStore } from "@/stores/auth-store"
-import { cloud } from "@/lib/cloudbase.tsx"
+import { authClient } from "@/lib/auth-client.ts"
 import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -40,7 +39,6 @@ export function UserAuthForm({
 }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const { auth } = useAuthStore()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,12 +53,14 @@ export function UserAuthForm({
 
     toast.promise(
       async () => {
-        await cloud.auth().signInWithPassword({
+        const { error } = await authClient.signIn.email({
           email: data.email,
           password: data.password,
         })
 
-        await auth.loadUser()
+        if (error) {
+          throw error
+        }
 
         await navigate({
           to: redirectTo || "/",
@@ -70,9 +70,7 @@ export function UserAuthForm({
       },
       {
         loading: "登录中...",
-        success: (email) => {
-          return `欢迎回来，${email}！`
-        },
+        success: (email) => `欢迎回来，${email}！`,
         error: (error) => {
           handleServerError(error)
           return "邮箱或密码错误。"

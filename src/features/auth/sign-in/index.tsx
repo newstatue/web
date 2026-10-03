@@ -49,7 +49,7 @@ export function SignIn() {
             >
               隐私政策
             </a>
-            .
+            。
           </p>
         </CardFooter>
       </Card>

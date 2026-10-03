@@ -8,12 +8,10 @@ import {
 } from "@tanstack/react-query"
 import { RouterProvider, createRouter } from "@tanstack/react-router"
 import { toast } from "sonner"
-import { useAuthStore } from "@/stores/auth-store"
 import { handleServerError } from "@/lib/handle-server-error"
 import { DirectionProvider } from "./context/direction-provider"
 import { FontProvider } from "./context/font-provider"
 import { ThemeProvider } from "./context/theme-provider"
-import { cloud, CloudContext } from "./lib/cloudbase"
 // Generated Routes
 import { routeTree } from "./routeTree.gen"
 // Styles
@@ -50,19 +48,18 @@ const queryClient = new QueryClient({
     },
   },
   queryCache: new QueryCache({
-    onError: (error) => {
+    onError: async (error) => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
-          toast.error("Session expired!")
-          useAuthStore.getState().auth.reset()
+          toast.error("登录状态无效，请重新登录。")
           const redirect = `${router.history.location.href}`
-          router.navigate({ to: "/sign-in", search: { redirect } })
+          await router.navigate({ to: "/sign-in", search: { redirect } })
         }
         if (error.response?.status === 500) {
-          toast.error("Internal Server Error!")
+          toast.error("请求繁忙，请稍后再试！")
           // Only navigate to error page in production to avoid disrupting HMR in development
           if (import.meta.env.PROD) {
-            router.navigate({ to: "/500" })
+            await router.navigate({ to: "/500" })
           }
         }
         if (error.response?.status === 403) {
@@ -95,15 +92,13 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <CloudContext.Provider value={cloud}>
-          <ThemeProvider>
-            <FontProvider>
-              <DirectionProvider>
-                <RouterProvider router={router} />
-              </DirectionProvider>
-            </FontProvider>
-          </ThemeProvider>
-        </CloudContext.Provider>
+        <ThemeProvider>
+          <FontProvider>
+            <DirectionProvider>
+              <RouterProvider router={router} />
+            </DirectionProvider>
+          </FontProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>
   )
