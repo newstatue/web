@@ -21,7 +21,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 12.8.1
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -32,8 +32,14 @@ jobs:
       - name: Install CloudBase CLI
         run: npm install -g @cloudbase/cli
 
+      - name: Login CloudBase
+        run: |
+          tcb login \
+            --cloudbase-api-key "${{ secrets.TCB_API_KEY }}" \
+            -e "${{ secrets.TCB_ENV_ID }}"
+
       - name: Deploy
-        run: cloudbase hosting deploy dist/ -e "${{ secrets.TCB_ENV_ID }}"
-        env:
-          TCB_SECRET_ID: ${{ secrets.TCB_SECRET_ID }}
-          TCB_SECRET_KEY: ${{ secrets.TCB_SECRET_KEY }}
+        run: |
+          tcb hosting deploy ./dist \
+            -e "${{ secrets.TCB_ENV_ID }}" \
+            --prune
