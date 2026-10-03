@@ -6,7 +6,6 @@ import { useNavigate } from "@tanstack/react-router"
 import { Loader2, UserPlus } from "lucide-react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
-import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -80,10 +79,7 @@ export function SignUpForm({
         success: (email) => {
           return `账户 ${email} 创建成功。`
         },
-        error: (error) => {
-          handleServerError(error)
-          return "创建账户失败。"
-        },
+        error: "创建账户失败。",
         finally: () => {
           setIsLoading(false)
         },

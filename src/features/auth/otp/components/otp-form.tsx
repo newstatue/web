@@ -6,7 +6,6 @@ import { useNavigate } from "@tanstack/react-router"
 import { Route } from "@/routes/(auth)/otp.tsx"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
-import { handleServerError } from "@/lib/handle-server-error.ts"
 import { showSubmittedData } from "@/lib/show-submitted-data"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -109,10 +108,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
 
           return "请输入新密码。"
         },
-        error: (error) => {
-          handleServerError(error)
-          return "操作失败，请重试。"
-        },
+        error: "操作失败，请重试。",
         finally: () => {
           setIsLoading(false)
         },

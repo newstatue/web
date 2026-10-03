@@ -6,7 +6,6 @@ import { useNavigate } from "@tanstack/react-router"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
-import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -64,10 +63,7 @@ export function ForgotPasswordForm({
       {
         loading: "发送邮件中...",
         success: (email) => `邮件已发送到 ${email}。`,
-        error: (error) => {
-          handleServerError(error)
-          return "发送邮件失败。"
-        },
+        error: "发送邮件失败。",
         finally: () => {
           setIsLoading(false)
         },

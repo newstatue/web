@@ -7,7 +7,6 @@ import { Route } from "@/routes/(auth)/reset-password"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
-import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -75,10 +74,7 @@ export function ResetPasswordForm({
       {
         loading: "正在重置密码...",
         success: "密码重置成功，请使用新密码登录。",
-        error: (error) => {
-          handleServerError(error)
-          return "密码重置失败，请重试。"
-        },
+        error: "密码重置失败，请重试。",
         finally: () => {
           setIsLoading(false)
         },

@@ -6,7 +6,6 @@ import { Link, useNavigate } from "@tanstack/react-router"
 import { Loader2, LogIn } from "lucide-react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
-import { handleServerError } from "@/lib/handle-server-error.ts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -71,10 +70,7 @@ export function UserAuthForm({
       {
         loading: "登录中...",
         success: (email) => `欢迎回来，${email}！`,
-        error: (error) => {
-          handleServerError(error)
-          return "邮箱或密码错误。"
-        },
+        error: "邮箱或密码错误。",
         finally: () => {
           setIsLoading(false)
         },
