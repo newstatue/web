@@ -1,1 +1,17 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="948,463.5,24,24"><defs><clipPath id="clip-1"><rect x="948" y="463.5" width="24" height="24" id="clip-1" stroke="none"/></clipPath></defs><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g><g id="Group 1"><g clip-path="url(#clip-1)" id="Group 1"><path d="M963,469.5v12c0,1.65685 1.34315,3 3,3c1.65685,0 3,-1.34315 3,-3c0,-1.65685 -1.34315,-3 -3,-3h-12c-1.65685,0 -3,1.34315 -3,3c0,1.65685 1.34315,3 3,3c1.65685,0 3,-1.34315 3,-3v-12c0,-1.65685 -1.34315,-3 -3,-3c-1.65685,0 -3,1.34315 -3,3c0,1.65685 1.34315,3 3,3h12c1.65685,0 3,-1.34315 3,-3c0,-1.65685 -1.34315,-3 -3,-3c-1.65685,0 -3,1.34315 -3,3" id="Path 1" stroke="#f2f2f2"/></g></g></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg"
+     version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs"
+     width="24" height="24">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="#f2f2f2"
+         strokewidth="2"
+         strokelinecap="round"
+         strokelinejoin="round">
+        <path d="M10 22v-8" />
+        <path d="M2.336 8.89 10 14l11.715-7.029" />
+        <path d="M22 14a2 2 0 0 1-.971 1.715l-10 6a2 2 0 0 1-2.138-.05l-6-4A2 2 0 0 1 2 16v-6a2 2 0 0 1 .971-1.715l10-6a2 2 0 0 1 2.138.05l6 4A2 2 0 0 1 22 8z" />
+    </svg>
+    <style>@media (prefers-color-scheme: light) { :root { filter: contrast(1) brightness(0.8); } }
+    </style>
+</svg>
