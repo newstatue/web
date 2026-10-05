@@ -1,3 +1,4 @@
+import { type ComponentProps } from "react"
 import { Link } from "@tanstack/react-router"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -25,7 +26,7 @@ export function AppTitle() {
               onClick={() => setOpenMobile(false)}
               className="grid flex-1 text-start text-sm leading-tight"
             >
-              <span className="truncate font-bold">Shadcn-Admin</span>
+              <span className="truncate font-bold">Evorsio</span>
               <span className="truncate text-xs">Vite + ShadcnUI</span>
             </Link>
             <ToggleSidebar />
@@ -40,7 +41,7 @@ function ToggleSidebar({
   className,
   onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar()
 
   return (

@@ -54,10 +54,12 @@ export function SignUpForm({
 
     toast.promise(
       async () => {
+        const seed = crypto.randomUUID()
         const { error } = await authClient.signUp.email({
           name: data.email.split("@")[0],
           email: data.email,
           password: data.password,
+          image: `https://api.dicebear.com/10.x/waves/svg?seed=${seed}`,
         })
 
         if (error) {
