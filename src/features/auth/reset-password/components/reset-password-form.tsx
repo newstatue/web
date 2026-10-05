@@ -3,7 +3,6 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
-import { Route } from "@/routes/(auth)/reset-password"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
@@ -30,10 +29,15 @@ const formSchema = z
     path: ["confirmPassword"],
   })
 
-type ResetPasswordFormProps = HTMLAttributes<HTMLFormElement>
+interface ResetPasswordFormProps extends HTMLAttributes<HTMLFormElement> {
+  email: string
+  otp: string
+}
 
 export function ResetPasswordForm({
   className,
+  email,
+  otp,
   ...props
 }: ResetPasswordFormProps) {
   const navigate = useNavigate()
@@ -46,8 +50,6 @@ export function ResetPasswordForm({
       confirmPassword: "",
     },
   })
-
-  const { email, otp } = Route.useSearch()
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)

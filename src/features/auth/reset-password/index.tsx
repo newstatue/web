@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useSearch } from "@tanstack/react-router"
 import {
   Card,
   CardContent,
@@ -11,6 +11,8 @@ import { AuthLayout } from "../auth-layout"
 import { ResetPasswordForm } from "./components/reset-password-form"
 
 export function ResetPassword() {
+  const { email, otp } = useSearch({ from: "/(auth)/reset-password" })
+
   return (
     <AuthLayout>
       <Card className="max-w-sm gap-4 sm:min-w-sm">
@@ -23,7 +25,7 @@ export function ResetPassword() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ResetPasswordForm />
+          <ResetPasswordForm email={email} otp={otp} />
         </CardContent>
         <CardFooter>
           <p className="mx-auto px-8 text-center text-sm text-balance text-muted-foreground">

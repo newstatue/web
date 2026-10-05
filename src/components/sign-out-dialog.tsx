@@ -1,6 +1,11 @@
-import { useNavigate, useLocation } from "@tanstack/react-router"
-import { authClient } from "@/lib/auth-client.ts"
-import { ConfirmDialog } from "@/components/confirm-dialog"
+import { useNavigate, useLocation } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth-client.ts";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+
+
+
+
+
 
 interface SignOutDialogProps {
   open: boolean
@@ -32,6 +37,7 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
       title="退出登录"
       desc="确定要退出登录吗？退出后需要重新登录才能访问您的账户。"
       confirmText="退出登录"
+      cancelBtnText="取消"
       destructive
       handleConfirm={handleSignOut}
       className="sm:max-w-sm"

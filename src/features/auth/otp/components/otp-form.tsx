@@ -3,7 +3,6 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
-import { Route } from "@/routes/(auth)/otp.tsx"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client.ts"
 import { showSubmittedData } from "@/lib/show-submitted-data"
@@ -31,9 +30,12 @@ const formSchema = z.object({
     .max(6, "请输入六位数字验证码。"),
 })
 
-type OtpFormProps = HTMLAttributes<HTMLFormElement>
+interface OtpFormProps extends HTMLAttributes<HTMLFormElement> {
+  email: string
+  type: "signup" | "forgot-password"
+}
 
-export function OtpForm({ className, ...props }: OtpFormProps) {
+export function OtpForm({ className, email, type, ...props }: OtpFormProps) {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -44,8 +46,6 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const otp = form.watch("otp")
-
-  const { email, type } = Route.useSearch()
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)

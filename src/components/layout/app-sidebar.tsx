@@ -7,7 +7,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Skeleton } from "@/components/ui/skeleton.tsx"
 import { AppTitle } from "./app-title"
 import { sidebarData } from "./data/sidebar-data"
 import { NavGroup } from "./nav-group"
@@ -34,9 +33,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        {isPending || !user ? (
-          <Skeleton className="h-12 w-full rounded-md" />
-        ) : (
+        {isPending || !user ? null : (
           <NavUser
             user={{
               name: user.name,
