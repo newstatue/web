@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import { Button } from "@/components/ui/button"
 import { Logo } from "@/features/root/Logo.tsx"
+import { AuthNavigation } from "@/features/root/AuthNavigation.tsx"
 
 export function Header() {
   return (
@@ -11,10 +11,7 @@ export function Header() {
           <span>Evorsio</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" render={<Link to="/login">登录</Link>} />
-          <Button render={<Link to="/sign-up">注册</Link>} />
-        </div>
+        <AuthNavigation />
       </div>
     </header>
   )

@@ -19,4 +19,12 @@ export default defineConfig({
       "@": resolve(import.meta.dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://api.evorsio.app",
+        changeOrigin: true,
+      },
+    },
+  },
 })

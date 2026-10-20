@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Link } from "@tanstack/react-router"
 
 export function App() {
   return (
@@ -13,6 +14,7 @@ export function App() {
         <div className="font-mono text-xs text-muted-foreground">
           (Press <kbd>d</kbd> to toggle dark mode)
         </div>
+        <Button render={<Link to="/blog">blog</Link>}>blog</Button>
       </div>
     </div>
   )
