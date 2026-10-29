@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import {ThemeProvider} from "next-themes";
+import { ThemeProvider } from "next-themes";
 
 const router = createRouter({
 	routeTree,
@@ -22,6 +22,6 @@ if (!rootElement.innerHTML) {
 	root.render(
 		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 			<RouterProvider router={router} />
-		</ThemeProvider>
+		</ThemeProvider>,
 	);
 }
