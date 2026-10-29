@@ -6,8 +6,8 @@
  */
 
 export interface LoginUser {
-	/** A URL to the JSON Schema for this object. */
-	readonly $schema?: string;
-	email: string;
-	password: string;
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  email: string;
+  password: string;
 }

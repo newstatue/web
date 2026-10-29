@@ -6,12 +6,12 @@
  */
 
 export interface User {
-	/** A URL to the JSON Schema for this object. */
-	readonly $schema?: string;
-	email: string;
-	email_verified: boolean;
-	id: string;
-	/** @nullable */
-	image: string | null;
-	name: string;
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  email: string;
+  email_verified: boolean;
+  id: string;
+  /** @nullable */
+  image: string | null;
+  name: string;
 }

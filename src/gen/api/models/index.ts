@@ -5,8 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export * from "./errorDetail.ts";
-export * from "./errorModel.ts";
-export * from "./loginUser.ts";
-export * from "./registerUser.ts";
-export * from "./user.ts";
+export * from './errorDetail.ts';
+export * from './errorModel.ts';
+export * from './loginUser.ts';
+export * from './registerUser.ts';
+export * from './user.ts';

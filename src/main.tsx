@@ -2,9 +2,16 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { ThemeProvider } from "next-themes";
+import { Toast } from "@heroui/react";
+import {QueryClientProvider,QueryClient} from "@tanstack/react-query";
+
+export const queryClient = new QueryClient()
 
 const router = createRouter({
 	routeTree,
+	context: {
+		queryClient,
+	},
 	defaultPreload: "intent",
 	scrollRestoration: true,
 });
@@ -15,13 +22,17 @@ declare module "@tanstack/react-router" {
 	}
 }
 
+
 const rootElement = document.getElementById("app")!;
 
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-			<RouterProvider router={router} />
+			<Toast.Provider/>
+			<QueryClientProvider client={queryClient}>
+				<RouterProvider router={router} />
+			</QueryClientProvider>
 		</ThemeProvider>,
 	);
 }

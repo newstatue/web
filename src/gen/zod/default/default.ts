@@ -4,31 +4,41 @@
  * Evorsio API
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from "zod";
+import * as zod from 'zod';
+
 
 /**
  * @summary Post API auth login
  */
 export const PostApiAuthLoginHeader = zod.object({
-	"User-Agent": zod.string().optional(),
-});
+  "User-Agent": zod.string().optional()
+})
 
 export const PostApiAuthLoginBody = zod.object({
-	email: zod.email(),
-	password: zod.string(),
-});
+  "email": zod.email(),
+  "password": zod.string()
+})
 
 export const PostApiAuthLoginResponse = zod.object({
-	$schema: zod
-		.url()
-		.optional()
-		.describe("A URL to the JSON Schema for this object."),
-	email: zod.string(),
-	email_verified: zod.boolean(),
-	id: zod.uuid(),
-	image: zod.string().nullable(),
-	name: zod.string(),
-});
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "email": zod.string(),
+  "email_verified": zod.boolean(),
+  "id": zod.uuid(),
+  "image": zod.string().nullable(),
+  "name": zod.string()
+})
+
+/**
+ * @summary Get API auth me
+ */
+export const GetApiAuthMeResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "email": zod.string(),
+  "email_verified": zod.boolean(),
+  "id": zod.uuid(),
+  "image": zod.string().nullable(),
+  "name": zod.string()
+})
 
 /**
  * @summary Post API auth register
@@ -39,27 +49,21 @@ export const postApiAuthRegisterBodyNameMax = 50;
 export const postApiAuthRegisterBodyPasswordMin = 8;
 export const postApiAuthRegisterBodyPasswordMax = 128;
 
+
+
 export const PostApiAuthRegisterBody = zod.object({
-	email: zod.email(),
-	image: zod.url().optional(),
-	name: zod
-		.string()
-		.min(postApiAuthRegisterBodyNameMin)
-		.max(postApiAuthRegisterBodyNameMax),
-	password: zod
-		.string()
-		.min(postApiAuthRegisterBodyPasswordMin)
-		.max(postApiAuthRegisterBodyPasswordMax),
-});
+  "email": zod.email(),
+  "image": zod.url().optional(),
+  "name": zod.string().min(postApiAuthRegisterBodyNameMin).max(postApiAuthRegisterBodyNameMax),
+  "password": zod.string().min(postApiAuthRegisterBodyPasswordMin).max(postApiAuthRegisterBodyPasswordMax)
+})
 
 export const PostApiAuthRegisterResponse = zod.object({
-	$schema: zod
-		.url()
-		.optional()
-		.describe("A URL to the JSON Schema for this object."),
-	email: zod.string(),
-	email_verified: zod.boolean(),
-	id: zod.uuid(),
-	image: zod.string().nullable(),
-	name: zod.string(),
-});
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "email": zod.string(),
+  "email_verified": zod.boolean(),
+  "id": zod.uuid(),
+  "image": zod.string().nullable(),
+  "name": zod.string()
+})
+

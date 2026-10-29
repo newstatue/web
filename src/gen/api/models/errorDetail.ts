@@ -6,10 +6,10 @@
  */
 
 export interface ErrorDetail {
-	/** Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
-	location?: string;
-	/** Error message text */
-	message?: string;
-	/** The value at the given location */
-	value?: unknown;
+  /** Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
+  location?: string;
+  /** Error message text */
+  message?: string;
+  /** The value at the given location */
+  value?: unknown;
 }

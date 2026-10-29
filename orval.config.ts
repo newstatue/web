@@ -11,6 +11,11 @@ export default defineConfig({
             schemas: "src/gen/api/models",
             client: "react-query",
             httpClient: "fetch",
+            override: {
+                fetch: {
+                    forceSuccessResponse: true,
+                },
+            },
         },
     },
     validation: {

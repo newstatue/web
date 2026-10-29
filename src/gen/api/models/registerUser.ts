@@ -6,18 +6,18 @@
  */
 
 export interface RegisterUser {
-	/** A URL to the JSON Schema for this object. */
-	readonly $schema?: string;
-	email: string;
-	image?: string;
-	/**
-	 * @minLength 2
-	 * @maxLength 50
-	 */
-	name: string;
-	/**
-	 * @minLength 8
-	 * @maxLength 128
-	 */
-	password: string;
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  email: string;
+  image?: string;
+  /**
+     * @minLength 2
+     * @maxLength 50
+     */
+  name: string;
+  /**
+     * @minLength 8
+     * @maxLength 128
+     */
+  password: string;
 }

@@ -4,380 +4,449 @@
  * Evorsio API
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	MutationFunction,
-	QueryClient,
-	UseMutationOptions,
-	UseMutationResult,
-} from "@tanstack/react-query";
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
+} from '@tanstack/react-query';
 
-import type { ErrorModel, LoginUser, RegisterUser, User } from "../models";
+import type {
+  ErrorModel,
+  LoginUser,
+  RegisterUser,
+  User
+} from '../models';
+
 
 // https://stackoverflow.com/questions/49579094/typescript-conditional-types-filter-out-readonly-properties-pick-only-requir/49579497#49579497
-type IfEquals<X, Y, A = X, B = never> =
-	(<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
+type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
+T,
+>() => T extends Y ? 1 : 2
+? A
+: B;
 
 type WritableKeys<T> = {
-	[P in keyof T]-?: IfEquals<
-		{ [Q in P]: T[P] },
-		{ -readonly [Q in P]: T[P] },
-		P
-	>;
+[P in keyof T]-?: IfEquals<
+  { [Q in P]: T[P] },
+  { -readonly [Q in P]: T[P] },
+  P
+>;
 }[keyof T];
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I,
-) => void
-	? I
-	: never;
+type UnionToIntersection<U> =
+  (U extends any ? (k: U)=>void : never) extends ((k: infer I)=>void) ? I : never;
 type DistributeReadOnlyOverUnions<T> = T extends any ? NonReadonly<T> : never;
 
 type Writable<T> = Pick<T, WritableKeys<T>>;
-type NonReadonly<T> = [T] extends [UnionToIntersection<T>]
-	? {
-			[P in keyof Writable<T>]: T[P] extends object
-				? NonReadonly<NonNullable<T[P]>>
-				: T[P];
-		}
-	: DistributeReadOnlyOverUnions<T>;
+type NonReadonly<T> = [T] extends [UnionToIntersection<T>] ? {
+  [P in keyof Writable<T>]: T[P] extends object
+    ? NonReadonly<NonNullable<T[P]>>
+    : T[P];
+} : DistributeReadOnlyOverUnions<T>;
+
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
 export type HTTPStatusCode2xx = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207;
 export type HTTPStatusCode3xx = 300 | 301 | 302 | 303 | 304 | 305 | 307 | 308;
-export type HTTPStatusCode4xx =
-	| 400
-	| 401
-	| 402
-	| 403
-	| 404
-	| 405
-	| 406
-	| 407
-	| 408
-	| 409
-	| 410
-	| 411
-	| 412
-	| 413
-	| 414
-	| 415
-	| 416
-	| 417
-	| 418
-	| 419
-	| 420
-	| 421
-	| 422
-	| 423
-	| 424
-	| 426
-	| 428
-	| 429
-	| 431
-	| 451;
+export type HTTPStatusCode4xx = 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 419 | 420 | 421 | 422 | 423 | 424 | 426 | 428 | 429 | 431 | 451;
 export type HTTPStatusCode5xx = 500 | 501 | 502 | 503 | 504 | 505 | 507 | 511;
-export type HTTPStatusCodes =
-	| HTTPStatusCode1xx
-	| HTTPStatusCode2xx
-	| HTTPStatusCode3xx
-	| HTTPStatusCode4xx
-	| HTTPStatusCode5xx;
+export type HTTPStatusCodes = HTTPStatusCode1xx | HTTPStatusCode2xx | HTTPStatusCode3xx | HTTPStatusCode4xx | HTTPStatusCode5xx;
+
+
+
+
+const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
+  const result = { queryKey } as T & { queryKey: K };
+  for (const key of Object.keys(query)) {
+    // The explicit queryKey always wins, matching the previous
+    // `{ ...query, queryKey }` spread where it was set last.
+    if (key === 'queryKey') continue;
+    Object.defineProperty(result, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => (query as Record<string, unknown>)[key],
+    });
+  }
+  return result;
+};
 
 export type postApiAuthLoginResponse200 = {
-	data: User;
-	status: 200;
-};
+  data: User
+  status: 200
+}
 
 export type postApiAuthLoginResponseDefault = {
-	data: ErrorModel;
-	status: Exclude<HTTPStatusCodes, 200>;
-};
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
 
-export type postApiAuthLoginResponseSuccess = postApiAuthLoginResponse200 & {
-	headers: Headers;
+export type postApiAuthLoginResponseSuccess = (postApiAuthLoginResponse200) & {
+  headers: Headers;
 };
-export type postApiAuthLoginResponseError = postApiAuthLoginResponseDefault & {
-	headers: Headers;
+export type postApiAuthLoginResponseError = (postApiAuthLoginResponseDefault) & {
+  headers: Headers;
 };
-
-export type postApiAuthLoginResponse =
-	| postApiAuthLoginResponseSuccess
-	| postApiAuthLoginResponseError;
 
 export const getPostApiAuthLoginUrl = () => {
-	return `/api/auth/login`;
-};
+
+
+
+
+  return `/api/auth/login`
+}
 
 /**
  * @summary Post API auth login
  */
-export const postApiAuthLogin = async (
-	loginUser: NonReadonly<LoginUser>,
-	options?: RequestInit,
-): Promise<postApiAuthLoginResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {};
-		if (h instanceof Headers) return Object.fromEntries(h.entries());
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			);
-		}
-		const headers: Record<string, string | readonly string[]> = {};
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value;
-		}
-		return headers;
-	};
-	const res = await fetch(getPostApiAuthLoginUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
-		},
-		body: JSON.stringify(loginUser),
-	});
+export const postApiAuthLogin = async (loginUser: NonReadonly<LoginUser>, options?: RequestInit): Promise<postApiAuthLoginResponseSuccess> => {
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPostApiAuthLoginUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(loginUser)
+  }
+)
 
-	const data: postApiAuthLoginResponse["data"] = body ? JSON.parse(body) : {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as postApiAuthLoginResponse;
-};
 
-export const getPostApiAuthLoginMutationKey = () =>
-	["postApiAuthLogin"] as const;
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-export const getPostApiAuthLoginMutationOptions = <
-	TError = ErrorModel,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiAuthLogin>>,
-		TError,
-		PostApiAuthLoginMutationVariables,
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiAuthLogin>>,
-	TError,
-	PostApiAuthLoginMutationVariables,
-	TContext
-> => {
-	const mutationKey = getPostApiAuthLoginMutationKey();
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+    const err: globalThis.Error & {info?: postApiAuthLoginResponseError['data'], status?: number} = new globalThis.Error();
+    const data : postApiAuthLoginResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: postApiAuthLoginResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postApiAuthLoginResponseSuccess
+}
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiAuthLogin>>,
-		PostApiAuthLoginMutationVariables
-	> = (props) => {
-		const { data } = props ?? {};
 
-		return postApiAuthLogin(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type PostApiAuthLoginMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postApiAuthLogin>>
->;
-export type PostApiAuthLoginMutationBody = NonReadonly<LoginUser>;
-export type PostApiAuthLoginMutationError = ErrorModel;
-export type PostApiAuthLoginMutationVariables = {
-	data: NonReadonly<LoginUser>;
-};
 
-/**
+export const getPostApiAuthLoginMutationKey = () => ['postApiAuthLogin'] as const;
+
+export const getPostApiAuthLoginMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,PostApiAuthLoginMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,PostApiAuthLoginMutationVariables, TContext> => {
+
+const mutationKey = getPostApiAuthLoginMutationKey();
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthLogin>>, PostApiAuthLoginMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthLogin(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthLogin>>>
+    export type PostApiAuthLoginMutationBody = NonReadonly<LoginUser>
+    export type PostApiAuthLoginMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PostApiAuthLoginMutationVariables = {data: NonReadonly<LoginUser>}
+
+    /**
  * @summary Post API auth login
  */
-export const usePostApiAuthLogin = <TError = ErrorModel, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiAuthLogin>>,
-			TError,
-			PostApiAuthLoginMutationVariables,
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof postApiAuthLogin>>,
-	TError,
-	PostApiAuthLoginMutationVariables,
-	TContext
-> => {
-	return useMutation(getPostApiAuthLoginMutationOptions(options), queryClient);
+export const usePostApiAuthLogin = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,PostApiAuthLoginMutationVariables, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthLogin>>,
+        TError,
+        PostApiAuthLoginMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostApiAuthLoginMutationOptions(options), queryClient);
+    }
+    export type getApiAuthMeResponse200 = {
+  data: User
+  status: 200
+}
+
+export type getApiAuthMeResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getApiAuthMeResponseSuccess = (getApiAuthMeResponse200) & {
+  headers: Headers;
 };
+export type getApiAuthMeResponseError = (getApiAuthMeResponseDefault) & {
+  headers: Headers;
+};
+
+export const getGetApiAuthMeUrl = () => {
+
+
+
+
+  return `/api/auth/me`
+}
+
+/**
+ * @summary Get API auth me
+ */
+export const getApiAuthMe = async ( options?: RequestInit): Promise<getApiAuthMeResponseSuccess> => {
+
+  const res = await fetch(getGetApiAuthMeUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
+
+    const err: globalThis.Error & {info?: getApiAuthMeResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getApiAuthMeResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiAuthMeResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getApiAuthMeResponseSuccess
+}
+
+
+
+
+
+export const getGetApiAuthMeQueryKey = () => {
+    return [
+    `/api/auth/me`
+    ] as const;
+    }
+
+
+export const getGetApiAuthMeQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAuthMeQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthMe>>> = ({ signal }) => getApiAuthMe({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiAuthMeQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAuthMe>>>
+export type GetApiAuthMeQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+
+
+export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAuthMe>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAuthMe>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAuthMe>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAuthMe>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get API auth me
+ */
+
+export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiAuthMeQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export type postApiAuthRegisterResponse200 = {
-	data: User;
-	status: 200;
-};
+  data: User
+  status: 200
+}
 
 export type postApiAuthRegisterResponseDefault = {
-	data: ErrorModel;
-	status: Exclude<HTTPStatusCodes, 200>;
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type postApiAuthRegisterResponseSuccess = (postApiAuthRegisterResponse200) & {
+  headers: Headers;
 };
-
-export type postApiAuthRegisterResponseSuccess =
-	postApiAuthRegisterResponse200 & {
-		headers: Headers;
-	};
-export type postApiAuthRegisterResponseError =
-	postApiAuthRegisterResponseDefault & {
-		headers: Headers;
-	};
-
-export type postApiAuthRegisterResponse =
-	| postApiAuthRegisterResponseSuccess
-	| postApiAuthRegisterResponseError;
+export type postApiAuthRegisterResponseError = (postApiAuthRegisterResponseDefault) & {
+  headers: Headers;
+};
 
 export const getPostApiAuthRegisterUrl = () => {
-	return `/api/auth/register`;
-};
+
+
+
+
+  return `/api/auth/register`
+}
 
 /**
  * @summary Post API auth register
  */
-export const postApiAuthRegister = async (
-	registerUser: NonReadonly<RegisterUser>,
-	options?: RequestInit,
-): Promise<postApiAuthRegisterResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {};
-		if (h instanceof Headers) return Object.fromEntries(h.entries());
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			);
-		}
-		const headers: Record<string, string | readonly string[]> = {};
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value;
-		}
-		return headers;
-	};
-	const res = await fetch(getPostApiAuthRegisterUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
-		},
-		body: JSON.stringify(registerUser),
-	});
+export const postApiAuthRegister = async (registerUser: NonReadonly<RegisterUser>, options?: RequestInit): Promise<postApiAuthRegisterResponseSuccess> => {
 
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPostApiAuthRegisterUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(registerUser)
+  }
+)
 
-	const data: postApiAuthRegisterResponse["data"] = body
-		? JSON.parse(body)
-		: {};
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as postApiAuthRegisterResponse;
-};
 
-export const getPostApiAuthRegisterMutationKey = () =>
-	["postApiAuthRegister"] as const;
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
 
-export const getPostApiAuthRegisterMutationOptions = <
-	TError = ErrorModel,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiAuthRegister>>,
-		TError,
-		PostApiAuthRegisterMutationVariables,
-		TContext
-	>;
-	fetch?: RequestInit;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiAuthRegister>>,
-	TError,
-	PostApiAuthRegisterMutationVariables,
-	TContext
-> => {
-	const mutationKey = getPostApiAuthRegisterMutationKey();
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined };
+    const err: globalThis.Error & {info?: postApiAuthRegisterResponseError['data'], status?: number} = new globalThis.Error();
+    const data : postApiAuthRegisterResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: postApiAuthRegisterResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postApiAuthRegisterResponseSuccess
+}
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiAuthRegister>>,
-		PostApiAuthRegisterMutationVariables
-	> = (props) => {
-		const { data } = props ?? {};
 
-		return postApiAuthRegister(data, fetchOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type PostApiAuthRegisterMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postApiAuthRegister>>
->;
-export type PostApiAuthRegisterMutationBody = NonReadonly<RegisterUser>;
-export type PostApiAuthRegisterMutationError = ErrorModel;
-export type PostApiAuthRegisterMutationVariables = {
-	data: NonReadonly<RegisterUser>;
-};
 
-/**
+export const getPostApiAuthRegisterMutationKey = () => ['postApiAuthRegister'] as const;
+
+export const getPostApiAuthRegisterMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,PostApiAuthRegisterMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,PostApiAuthRegisterMutationVariables, TContext> => {
+
+const mutationKey = getPostApiAuthRegisterMutationKey();
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthRegister>>, PostApiAuthRegisterMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthRegister(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthRegisterMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthRegister>>>
+    export type PostApiAuthRegisterMutationBody = NonReadonly<RegisterUser>
+    export type PostApiAuthRegisterMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PostApiAuthRegisterMutationVariables = {data: NonReadonly<RegisterUser>}
+
+    /**
  * @summary Post API auth register
  */
-export const usePostApiAuthRegister = <TError = ErrorModel, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiAuthRegister>>,
-			TError,
-			PostApiAuthRegisterMutationVariables,
-			TContext
-		>;
-		fetch?: RequestInit;
-	},
-	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof postApiAuthRegister>>,
-	TError,
-	PostApiAuthRegisterMutationVariables,
-	TContext
-> => {
-	return useMutation(
-		getPostApiAuthRegisterMutationOptions(options),
-		queryClient,
-	);
-};
+export const usePostApiAuthRegister = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,PostApiAuthRegisterMutationVariables, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthRegister>>,
+        TError,
+        PostApiAuthRegisterMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPostApiAuthRegisterMutationOptions(options), queryClient);
+    }
