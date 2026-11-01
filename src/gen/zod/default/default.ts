@@ -68,42 +68,6 @@ export const PostApiAuthRegisterResponse = zod.object({
 })
 
 /**
- * @summary Get API communites by slug posts
- */
-export const GetApiCommunitesBySlugPostsParams = zod.object({
-  "slug": zod.string()
-})
-
-export const getApiCommunitesBySlugPostsQueryPageDefault = 1;
-
-export const getApiCommunitesBySlugPostsQueryLimitDefault = 20;
-export const getApiCommunitesBySlugPostsQueryLimitMax = 100;
-
-
-
-export const GetApiCommunitesBySlugPostsQueryParams = zod.object({
-  "page": zod.int().min(1).default(getApiCommunitesBySlugPostsQueryPageDefault),
-  "limit": zod.int().min(1).max(getApiCommunitesBySlugPostsQueryLimitMax).default(getApiCommunitesBySlugPostsQueryLimitDefault)
-})
-
-export const GetApiCommunitesBySlugPostsResponse = zod.object({
-  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
-  "items": zod.array(zod.object({
-  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
-  "authorId": zod.uuid(),
-  "communityId": zod.uuid(),
-  "content": zod.string(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "id": zod.uuid(),
-  "title": zod.string(),
-  "updatedAt": zod.iso.datetime({"offset":true})
-})).nullable(),
-  "limit": zod.int(),
-  "page": zod.int(),
-  "total": zod.int()
-})
-
-/**
  * @summary Get API communities
  */
 export const getApiCommunitiesQueryPageDefault = 1;
@@ -210,6 +174,42 @@ export const PostApiCommunitiesBySlugMembersMeResponse = zod.object({
 })
 
 /**
+ * @summary Get API communities by slug posts
+ */
+export const GetApiCommunitiesBySlugPostsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const getApiCommunitiesBySlugPostsQueryPageDefault = 1;
+
+export const getApiCommunitiesBySlugPostsQueryLimitDefault = 20;
+export const getApiCommunitiesBySlugPostsQueryLimitMax = 100;
+
+
+
+export const GetApiCommunitiesBySlugPostsQueryParams = zod.object({
+  "page": zod.int().min(1).default(getApiCommunitiesBySlugPostsQueryPageDefault),
+  "limit": zod.int().min(1).max(getApiCommunitiesBySlugPostsQueryLimitMax).default(getApiCommunitiesBySlugPostsQueryLimitDefault)
+})
+
+export const GetApiCommunitiesBySlugPostsResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "items": zod.array(zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "authorId": zod.uuid(),
+  "communityId": zod.uuid(),
+  "content": zod.string(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "id": zod.uuid(),
+  "title": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})).nullable(),
+  "limit": zod.int(),
+  "page": zod.int(),
+  "total": zod.int()
+})
+
+/**
  * @summary Post API communities by slug posts
  */
 export const PostApiCommunitiesBySlugPostsParams = zod.object({
@@ -228,6 +228,25 @@ export const PostApiCommunitiesBySlugPostsBody = zod.object({
 })
 
 export const PostApiCommunitiesBySlugPostsResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "authorId": zod.uuid(),
+  "communityId": zod.uuid(),
+  "content": zod.string(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "id": zod.uuid(),
+  "title": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})
+
+/**
+ * @summary Get API communities by slug posts by post ID
+ */
+export const GetApiCommunitiesBySlugPostsByPostIdParams = zod.object({
+  "slug": zod.string(),
+  "postId": zod.uuid()
+})
+
+export const GetApiCommunitiesBySlugPostsByPostIdResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "authorId": zod.uuid(),
   "communityId": zod.uuid(),

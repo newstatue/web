@@ -11,6 +11,7 @@ export * from './createCommunityPost.ts';
 export * from './errorDetail.ts';
 export * from './errorModel.ts';
 export * from './getApiCommunitesBySlugPostsParams.ts';
+export * from './getApiCommunitiesBySlugPostsParams.ts';
 export * from './getApiCommunitiesParams.ts';
 export * from './joinCommunity.ts';
 export * from './loginUser.ts';

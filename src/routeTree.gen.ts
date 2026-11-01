@@ -18,7 +18,8 @@ import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as ErrorComingSoonRouteImport } from './routes/error/coming-soon'
-import { Route as AuthenticatedCSlugRouteImport } from './routes/_authenticated/c/$slug'
+import { Route as AuthenticatedCSlugIndexRouteImport } from './routes/_authenticated/c/$slug/index'
+import { Route as AuthenticatedCSlugPPostIdRouteImport } from './routes/_authenticated/c/$slug/p/$postId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,11 +65,17 @@ const ErrorComingSoonRoute = ErrorComingSoonRouteImport.update({
   path: '/coming-soon',
   getParentRoute: () => ErrorRouteRoute,
 } as any)
-const AuthenticatedCSlugRoute = AuthenticatedCSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
+const AuthenticatedCSlugIndexRoute = AuthenticatedCSlugIndexRouteImport.update({
+  id: '/$slug/',
+  path: '/$slug/',
   getParentRoute: () => AuthenticatedCRouteRoute,
 } as any)
+const AuthenticatedCSlugPPostIdRoute =
+  AuthenticatedCSlugPPostIdRouteImport.update({
+    id: '/$slug/p/$postId',
+    path: '/$slug/p/$postId',
+    getParentRoute: () => AuthenticatedCRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -79,7 +86,8 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
-  '/c/$slug': typeof AuthenticatedCSlugRoute
+  '/c/$slug/': typeof AuthenticatedCSlugIndexRoute
+  '/c/$slug/p/$postId': typeof AuthenticatedCSlugPPostIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -90,7 +98,8 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
-  '/c/$slug': typeof AuthenticatedCSlugRoute
+  '/c/$slug': typeof AuthenticatedCSlugIndexRoute
+  '/c/$slug/p/$postId': typeof AuthenticatedCSlugPPostIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -103,7 +112,8 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
-  '/_authenticated/c/$slug': typeof AuthenticatedCSlugRoute
+  '/_authenticated/c/$slug/': typeof AuthenticatedCSlugIndexRoute
+  '/_authenticated/c/$slug/p/$postId': typeof AuthenticatedCSlugPPostIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -116,7 +126,8 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
-    | '/c/$slug'
+    | '/c/$slug/'
+    | '/c/$slug/p/$postId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/error/coming-soon'
     | '/c/$slug'
+    | '/c/$slug/p/$postId'
   id:
     | '__root__'
     | '/'
@@ -139,7 +151,8 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
-    | '/_authenticated/c/$slug'
+    | '/_authenticated/c/$slug/'
+    | '/_authenticated/c/$slug/p/$postId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -214,22 +227,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorComingSoonRouteImport
       parentRoute: typeof ErrorRouteRoute
     }
-    '/_authenticated/c/$slug': {
-      id: '/_authenticated/c/$slug'
+    '/_authenticated/c/$slug/': {
+      id: '/_authenticated/c/$slug/'
       path: '/$slug'
-      fullPath: '/c/$slug'
-      preLoaderRoute: typeof AuthenticatedCSlugRouteImport
+      fullPath: '/c/$slug/'
+      preLoaderRoute: typeof AuthenticatedCSlugIndexRouteImport
+      parentRoute: typeof AuthenticatedCRouteRoute
+    }
+    '/_authenticated/c/$slug/p/$postId': {
+      id: '/_authenticated/c/$slug/p/$postId'
+      path: '/$slug/p/$postId'
+      fullPath: '/c/$slug/p/$postId'
+      preLoaderRoute: typeof AuthenticatedCSlugPPostIdRouteImport
       parentRoute: typeof AuthenticatedCRouteRoute
     }
   }
 }
 
 interface AuthenticatedCRouteRouteChildren {
-  AuthenticatedCSlugRoute: typeof AuthenticatedCSlugRoute
+  AuthenticatedCSlugIndexRoute: typeof AuthenticatedCSlugIndexRoute
+  AuthenticatedCSlugPPostIdRoute: typeof AuthenticatedCSlugPPostIdRoute
 }
 
 const AuthenticatedCRouteRouteChildren: AuthenticatedCRouteRouteChildren = {
-  AuthenticatedCSlugRoute: AuthenticatedCSlugRoute,
+  AuthenticatedCSlugIndexRoute: AuthenticatedCSlugIndexRoute,
+  AuthenticatedCSlugPPostIdRoute: AuthenticatedCSlugPPostIdRoute,
 }
 
 const AuthenticatedCRouteRouteWithChildren =

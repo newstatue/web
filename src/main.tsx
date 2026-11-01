@@ -5,6 +5,20 @@ import { ThemeProvider } from "next-themes";
 import { Toast } from "@heroui/react";
 import {QueryClientProvider,QueryClient} from "@tanstack/react-query";
 
+async function enableMocking() {
+	if (!import.meta.env.DEV) return
+
+	const { worker } = await import("./mocks/browser")
+
+	await worker.start({
+		onUnhandledFrame: "bypass",
+	})
+
+	console.log("MSW 已启动")
+}
+
+await enableMocking()
+
 export const queryClient = new QueryClient()
 
 const router = createRouter({

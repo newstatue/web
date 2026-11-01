@@ -16,6 +16,9 @@ export default defineConfig({
                     forceSuccessResponse: true,
                 },
             },
+            mock: {
+                generators: [{ type: 'msw' }, { type: 'faker' }],
+            },
         },
     },
     validation: {

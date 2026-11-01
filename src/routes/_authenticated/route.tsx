@@ -1,9 +1,12 @@
-import {createFileRoute, Outlet, redirect} from '@tanstack/react-router'
-import {getApiAuthMe, getGetApiAuthMeQueryKey} from "#/gen/api";
-import type {ApiError} from "#/lib/error.ts";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import { getApiAuthMe, getGetApiAuthMeQueryKey } from "#/gen/api"
+import type { ApiError } from "#/lib/error"
 
-export const Route = createFileRoute('/_authenticated')({
-    beforeLoad:async({context}) => {
+export const Route = createFileRoute("/_authenticated")({
+    beforeLoad: async ({ context }) => {
+        if (import.meta.env.DEV) {
+            return
+        }
         try {
             await context.queryClient.query({
                 queryKey: getGetApiAuthMeQueryKey(),
@@ -23,5 +26,5 @@ export const Route = createFileRoute('/_authenticated')({
 })
 
 function RouteComponent() {
-    return <Outlet/>
+    return <Outlet />
 }

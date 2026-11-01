@@ -28,7 +28,7 @@ import type {
   CreateCommunity,
   CreateCommunityPost,
   ErrorModel,
-  GetApiCommunitesBySlugPostsParams,
+  GetApiCommunitiesBySlugPostsParams,
   GetApiCommunitiesParams,
   JoinCommunity,
   LoginUser,
@@ -459,153 +459,7 @@ export const usePostApiAuthRegister = <TError = globalThis.Error & { info?: Erro
       > => {
       return useMutation(getPostApiAuthRegisterMutationOptions(options), queryClient);
     }
-    export type getApiCommunitesBySlugPostsResponse200 = {
-  data: ResultPost
-  status: 200
-}
-
-export type getApiCommunitesBySlugPostsResponseDefault = {
-  data: ErrorModel
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type getApiCommunitesBySlugPostsResponseSuccess = (getApiCommunitesBySlugPostsResponse200) & {
-  headers: Headers;
-};
-export type getApiCommunitesBySlugPostsResponseError = (getApiCommunitesBySlugPostsResponseDefault) & {
-  headers: Headers;
-};
-
-export const getGetApiCommunitesBySlugPostsUrl = (slug: string,
-    params?: GetApiCommunitesBySlugPostsParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/communites/${slug}/posts?${stringifiedParams}` : `/api/communites/${slug}/posts`
-}
-
-/**
- * @summary Get API communites by slug posts
- */
-export const getApiCommunitesBySlugPosts = async (slug: string,
-    params?: GetApiCommunitesBySlugPostsParams, options?: RequestInit): Promise<getApiCommunitesBySlugPostsResponseSuccess> => {
-
-  const res = await fetch(getGetApiCommunitesBySlugPostsUrl(slug,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  if (!res.ok) {
-
-    const err: globalThis.Error & {info?: getApiCommunitesBySlugPostsResponseError['data'], status?: number} = new globalThis.Error();
-    const data : getApiCommunitesBySlugPostsResponseError['data'] = body ? JSON.parse(body) : {}
-    err.info = data;
-    err.status = res.status;
-    throw err;
-  }
-  const data: getApiCommunitesBySlugPostsResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiCommunitesBySlugPostsResponseSuccess
-}
-
-
-
-
-
-export const getGetApiCommunitesBySlugPostsQueryKey = (slug: string,
-    params?: GetApiCommunitesBySlugPostsParams,) => {
-    return [
-    `/api/communites/${slug}/posts`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getGetApiCommunitesBySlugPostsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
-    params?: GetApiCommunitesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
-) => {
-
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitesBySlugPostsQueryKey(slug,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>> = ({ signal }) => getApiCommunitesBySlugPosts(slug,params, { signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetApiCommunitesBySlugPostsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>>
-export type GetApiCommunitesBySlugPostsQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
-
-
-export function useGetApiCommunitesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string,
-    params: undefined |  GetApiCommunitesBySlugPostsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>,
-          TError,
-          Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string,
-    params?: GetApiCommunitesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>,
-          TError,
-          Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string,
-    params?: GetApiCommunitesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get API communites by slug posts
- */
-
-export function useGetApiCommunitesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string,
-    params?: GetApiCommunitesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetApiCommunitesBySlugPostsQueryOptions(slug,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-export type getApiCommunitiesResponse200 = {
+    export type getApiCommunitiesResponse200 = {
   data: ResultCommunity
   status: 200
 }
@@ -1200,7 +1054,153 @@ export const usePostApiCommunitiesBySlugMembersMe = <TError = globalThis.Error &
       > => {
       return useMutation(getPostApiCommunitiesBySlugMembersMeMutationOptions(options), queryClient);
     }
-    export type postApiCommunitiesBySlugPostsResponse200 = {
+    export type getApiCommunitiesBySlugPostsResponse200 = {
+  data: ResultPost
+  status: 200
+}
+
+export type getApiCommunitiesBySlugPostsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getApiCommunitiesBySlugPostsResponseSuccess = (getApiCommunitiesBySlugPostsResponse200) & {
+  headers: Headers;
+};
+export type getApiCommunitiesBySlugPostsResponseError = (getApiCommunitiesBySlugPostsResponseDefault) & {
+  headers: Headers;
+};
+
+export const getGetApiCommunitiesBySlugPostsUrl = (slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/communities/${slug}/posts?${stringifiedParams}` : `/api/communities/${slug}/posts`
+}
+
+/**
+ * @summary Get API communities by slug posts
+ */
+export const getApiCommunitiesBySlugPosts = async (slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams, options?: RequestInit): Promise<getApiCommunitiesBySlugPostsResponseSuccess> => {
+
+  const res = await fetch(getGetApiCommunitiesBySlugPostsUrl(slug,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
+
+    const err: globalThis.Error & {info?: getApiCommunitiesBySlugPostsResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getApiCommunitiesBySlugPostsResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiCommunitiesBySlugPostsResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getApiCommunitiesBySlugPostsResponseSuccess
+}
+
+
+
+
+
+export const getGetApiCommunitiesBySlugPostsQueryKey = (slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams,) => {
+    return [
+    `/api/communities/${slug}/posts`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetApiCommunitiesBySlugPostsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitiesBySlugPostsQueryKey(slug,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>> = ({ signal }) => getApiCommunitiesBySlugPosts(slug,params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommunitiesBySlugPostsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>>
+export type GetApiCommunitiesBySlugPostsQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+
+
+export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    params: undefined |  GetApiCommunitiesBySlugPostsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get API communities by slug posts
+ */
+
+export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommunitiesBySlugPostsQueryOptions(slug,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type postApiCommunitiesBySlugPostsResponse200 = {
   data: Post
   status: 200
 }
@@ -1319,3 +1319,142 @@ export const usePostApiCommunitiesBySlugPosts = <TError = globalThis.Error & { i
       > => {
       return useMutation(getPostApiCommunitiesBySlugPostsMutationOptions(options), queryClient);
     }
+    export type getApiCommunitiesBySlugPostsByPostIdResponse200 = {
+  data: Post
+  status: 200
+}
+
+export type getApiCommunitiesBySlugPostsByPostIdResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getApiCommunitiesBySlugPostsByPostIdResponseSuccess = (getApiCommunitiesBySlugPostsByPostIdResponse200) & {
+  headers: Headers;
+};
+export type getApiCommunitiesBySlugPostsByPostIdResponseError = (getApiCommunitiesBySlugPostsByPostIdResponseDefault) & {
+  headers: Headers;
+};
+
+export const getGetApiCommunitiesBySlugPostsByPostIdUrl = (slug: string,
+    postId: string,) => {
+
+
+
+
+  return `/api/communities/${slug}/posts/${postId}`
+}
+
+/**
+ * @summary Get API communities by slug posts by post ID
+ */
+export const getApiCommunitiesBySlugPostsByPostId = async (slug: string,
+    postId: string, options?: RequestInit): Promise<getApiCommunitiesBySlugPostsByPostIdResponseSuccess> => {
+
+  const res = await fetch(getGetApiCommunitiesBySlugPostsByPostIdUrl(slug,postId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
+
+    const err: globalThis.Error & {info?: getApiCommunitiesBySlugPostsByPostIdResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getApiCommunitiesBySlugPostsByPostIdResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: getApiCommunitiesBySlugPostsByPostIdResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getApiCommunitiesBySlugPostsByPostIdResponseSuccess
+}
+
+
+
+
+
+export const getGetApiCommunitiesBySlugPostsByPostIdQueryKey = (slug: string,
+    postId: string,) => {
+    return [
+    `/api/communities/${slug}/posts/${postId}`
+    ] as const;
+    }
+
+
+export const getGetApiCommunitiesBySlugPostsByPostIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitiesBySlugPostsByPostIdQueryKey(slug,postId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>> = ({ signal }) => getApiCommunitiesBySlugPostsByPostId(slug,postId, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined && postId !== null && postId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommunitiesBySlugPostsByPostIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>>
+export type GetApiCommunitiesBySlugPostsByPostIdQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+
+
+export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    postId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get API communities by slug posts by post ID
+ */
+
+export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string,
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommunitiesBySlugPostsByPostIdQueryOptions(slug,postId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
