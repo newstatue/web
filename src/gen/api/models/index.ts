@@ -5,8 +5,17 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './community.ts';
+export * from './createCommunity.ts';
+export * from './createCommunityPost.ts';
 export * from './errorDetail.ts';
 export * from './errorModel.ts';
+export * from './getApiCommunitesBySlugPostsParams.ts';
+export * from './getApiCommunitiesParams.ts';
+export * from './joinCommunity.ts';
 export * from './loginUser.ts';
+export * from './post.ts';
 export * from './registerUser.ts';
+export * from './resultCommunity.ts';
+export * from './resultPost.ts';
 export * from './user.ts';

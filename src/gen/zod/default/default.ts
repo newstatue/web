@@ -67,3 +67,174 @@ export const PostApiAuthRegisterResponse = zod.object({
   "name": zod.string()
 })
 
+/**
+ * @summary Get API communites by slug posts
+ */
+export const GetApiCommunitesBySlugPostsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const getApiCommunitesBySlugPostsQueryPageDefault = 1;
+
+export const getApiCommunitesBySlugPostsQueryLimitDefault = 20;
+export const getApiCommunitesBySlugPostsQueryLimitMax = 100;
+
+
+
+export const GetApiCommunitesBySlugPostsQueryParams = zod.object({
+  "page": zod.int().min(1).default(getApiCommunitesBySlugPostsQueryPageDefault),
+  "limit": zod.int().min(1).max(getApiCommunitesBySlugPostsQueryLimitMax).default(getApiCommunitesBySlugPostsQueryLimitDefault)
+})
+
+export const GetApiCommunitesBySlugPostsResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "items": zod.array(zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "authorId": zod.uuid(),
+  "communityId": zod.uuid(),
+  "content": zod.string(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "id": zod.uuid(),
+  "title": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})).nullable(),
+  "limit": zod.int(),
+  "page": zod.int(),
+  "total": zod.int()
+})
+
+/**
+ * @summary Get API communities
+ */
+export const getApiCommunitiesQueryPageDefault = 1;
+
+export const getApiCommunitiesQueryLimitDefault = 20;
+export const getApiCommunitiesQueryLimitMax = 100;
+
+
+
+export const GetApiCommunitiesQueryParams = zod.object({
+  "page": zod.int().min(1).default(getApiCommunitiesQueryPageDefault),
+  "limit": zod.int().min(1).max(getApiCommunitiesQueryLimitMax).default(getApiCommunitiesQueryLimitDefault)
+})
+
+export const GetApiCommunitiesResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "items": zod.array(zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "description": zod.string(),
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "ownerId": zod.uuid(),
+  "slug": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})).nullable(),
+  "limit": zod.int(),
+  "page": zod.int(),
+  "total": zod.int()
+})
+
+/**
+ * @summary Post API communities
+ */
+export const postApiCommunitiesBodyDescriptionMax = 1000;
+
+export const postApiCommunitiesBodyNameMax = 100;
+
+export const postApiCommunitiesBodySlugMin = 3;
+export const postApiCommunitiesBodySlugMax = 32;
+
+
+export const postApiCommunitiesBodySlugRegExp = new RegExp('^[a-z0-9]+(-[a-z0-9]+)*$');
+
+
+export const PostApiCommunitiesBody = zod.object({
+  "description": zod.string().max(postApiCommunitiesBodyDescriptionMax),
+  "name": zod.string().min(1).max(postApiCommunitiesBodyNameMax),
+  "ownerId": zod.uuid(),
+  "slug": zod.string().min(postApiCommunitiesBodySlugMin).max(postApiCommunitiesBodySlugMax).regex(postApiCommunitiesBodySlugRegExp)
+})
+
+export const PostApiCommunitiesResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "description": zod.string(),
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "ownerId": zod.uuid(),
+  "slug": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})
+
+/**
+ * @summary Get API communities by slug
+ */
+export const GetApiCommunitiesBySlugParams = zod.object({
+  "slug": zod.string()
+})
+
+export const GetApiCommunitiesBySlugResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "description": zod.string(),
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "ownerId": zod.uuid(),
+  "slug": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})
+
+/**
+ * @summary Delete API communities by slug members me
+ */
+export const DeleteApiCommunitiesBySlugMembersMeParams = zod.object({
+  "slug": zod.string()
+})
+
+export const DeleteApiCommunitiesBySlugMembersMeResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "joined": zod.boolean()
+})
+
+/**
+ * @summary Post API communities by slug members me
+ */
+export const PostApiCommunitiesBySlugMembersMeParams = zod.object({
+  "slug": zod.string()
+})
+
+export const PostApiCommunitiesBySlugMembersMeResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "joined": zod.boolean()
+})
+
+/**
+ * @summary Post API communities by slug posts
+ */
+export const PostApiCommunitiesBySlugPostsParams = zod.object({
+  "slug": zod.string()
+})
+
+export const postApiCommunitiesBySlugPostsBodyContentMax = 50000;
+
+export const postApiCommunitiesBySlugPostsBodyTitleMax = 200;
+
+
+
+export const PostApiCommunitiesBySlugPostsBody = zod.object({
+  "content": zod.string().min(1).max(postApiCommunitiesBySlugPostsBodyContentMax),
+  "title": zod.string().min(1).max(postApiCommunitiesBySlugPostsBodyTitleMax)
+})
+
+export const PostApiCommunitiesBySlugPostsResponse = zod.object({
+  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+  "authorId": zod.uuid(),
+  "communityId": zod.uuid(),
+  "content": zod.string(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "id": zod.uuid(),
+  "title": zod.string(),
+  "updatedAt": zod.iso.datetime({"offset":true})
+})
+

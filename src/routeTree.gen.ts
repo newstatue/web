@@ -13,10 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as ErrorRouteRouteImport } from './routes/error/route'
+import { Route as AuthenticatedCRouteRouteImport } from './routes/_authenticated/c/route'
 import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as ErrorComingSoonRouteImport } from './routes/error/coming-soon'
+import { Route as AuthenticatedCSlugRouteImport } from './routes/_authenticated/c/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,6 +38,11 @@ const ErrorRouteRoute = ErrorRouteRouteImport.update({
   id: '/error',
   path: '/error',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCRouteRoute = AuthenticatedCRouteRouteImport.update({
+  id: '/c',
+  path: '/c',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMeRoute = AuthenticatedMeRouteImport.update({
   id: '/me',
@@ -57,24 +64,33 @@ const ErrorComingSoonRoute = ErrorComingSoonRouteImport.update({
   path: '/coming-soon',
   getParentRoute: () => ErrorRouteRoute,
 } as any)
+const AuthenticatedCSlugRoute = AuthenticatedCSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AuthenticatedCRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/error': typeof ErrorRouteRouteWithChildren
+  '/c': typeof AuthenticatedCRouteRouteWithChildren
   '/me': typeof AuthenticatedMeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
+  '/c/$slug': typeof AuthenticatedCSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/error': typeof ErrorRouteRouteWithChildren
+  '/c': typeof AuthenticatedCRouteRouteWithChildren
   '/me': typeof AuthenticatedMeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
+  '/c/$slug': typeof AuthenticatedCSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,10 +98,12 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/error': typeof ErrorRouteRouteWithChildren
+  '/_authenticated/c': typeof AuthenticatedCRouteRouteWithChildren
   '/_authenticated/me': typeof AuthenticatedMeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
+  '/_authenticated/c/$slug': typeof AuthenticatedCSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,29 +111,35 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/error'
+    | '/c'
     | '/me'
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
+    | '/c/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/error'
+    | '/c'
     | '/me'
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
+    | '/c/$slug'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/error'
+    | '/_authenticated/c'
     | '/_authenticated/me'
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
+    | '/_authenticated/c/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -155,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/c': {
+      id: '/_authenticated/c'
+      path: '/c'
+      fullPath: '/c'
+      preLoaderRoute: typeof AuthenticatedCRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/me': {
       id: '/_authenticated/me'
       path: '/me'
@@ -183,14 +214,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorComingSoonRouteImport
       parentRoute: typeof ErrorRouteRoute
     }
+    '/_authenticated/c/$slug': {
+      id: '/_authenticated/c/$slug'
+      path: '/$slug'
+      fullPath: '/c/$slug'
+      preLoaderRoute: typeof AuthenticatedCSlugRouteImport
+      parentRoute: typeof AuthenticatedCRouteRoute
+    }
   }
 }
 
+interface AuthenticatedCRouteRouteChildren {
+  AuthenticatedCSlugRoute: typeof AuthenticatedCSlugRoute
+}
+
+const AuthenticatedCRouteRouteChildren: AuthenticatedCRouteRouteChildren = {
+  AuthenticatedCSlugRoute: AuthenticatedCSlugRoute,
+}
+
+const AuthenticatedCRouteRouteWithChildren =
+  AuthenticatedCRouteRoute._addFileChildren(AuthenticatedCRouteRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCRouteRoute: typeof AuthenticatedCRouteRouteWithChildren
   AuthenticatedMeRoute: typeof AuthenticatedMeRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCRouteRoute: AuthenticatedCRouteRouteWithChildren,
   AuthenticatedMeRoute: AuthenticatedMeRoute,
 }
 
