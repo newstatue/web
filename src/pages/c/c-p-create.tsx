@@ -2,11 +2,11 @@ import { useState } from "react"
 import { useNavigate } from "@tanstack/react-router"
 import { useQueryClient } from "@tanstack/react-query"
 import { Button, Card, Input, Label, TextField } from "@heroui/react"
-import { MarkdownEditor } from "#/components/markdown-editor"
+import { MarkdownEditor } from "@/components/markdown-editor"
 import {
     usePostApiCommunitiesBySlugPosts,
     getGetApiCommunitiesBySlugPostsQueryKey,
-} from "#/gen/api"
+} from "@/gen/api"
 
 type Props = {
     slug: string

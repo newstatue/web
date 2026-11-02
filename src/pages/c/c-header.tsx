@@ -4,7 +4,7 @@ import {
     useDeleteApiCommunitiesBySlugMembersMe,
     useGetApiCommunitiesBySlug,
     usePostApiCommunitiesBySlugMembersMe,
-} from "#/gen/api"
+} from "@/gen/api"
 import { CheckIcon, PlusIcon } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import {Link} from "@tanstack/react-router";

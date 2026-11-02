@@ -1,4 +1,4 @@
-import type {ErrorDetail, ErrorModel} from "#/gen/api/models";
+import type {ErrorDetail, ErrorModel} from "@/gen/api/models";
 
 export type ApiError = Error & {
     info?: ErrorModel

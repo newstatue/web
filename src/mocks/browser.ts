@@ -1,7 +1,7 @@
 import { setupWorker } from "msw/browser"
 import { http, HttpResponse } from "msw"
-import { getDefaultMock } from "#/gen/api/default/default.msw"
-import { mockPosts } from "#/mocks/posts"
+import { getDefaultMock } from "@/gen/api/default/default.msw"
+import { mockPosts } from "@/mocks/posts"
 
 
 export const worker = setupWorker(

@@ -1,7 +1,7 @@
 import removeMarkdown from "remove-markdown"
 import { Button, ButtonGroup, Card, Spinner } from "@heroui/react"
-import { Link } from "#/components/link"
-import { useGetApiCommunitiesBySlugPosts } from "#/gen/api"
+import { Link } from "@/components/link"
+import { useGetApiCommunitiesBySlugPosts } from "@/gen/api"
 import {
     ShareFatIcon,
     ThumbsDownIcon,

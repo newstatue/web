@@ -1,6 +1,6 @@
 import {Card} from "@heroui/react"
-import { useGetApiCommunitiesBySlugPostsByPostId } from "#/gen/api"
-import {Markdown} from "#/components/markdown.tsx";
+import { useGetApiCommunitiesBySlugPostsByPostId } from "@/gen/api"
+import {Markdown} from "@/components/markdown.tsx";
 
 type CPProps = {
     slug: string

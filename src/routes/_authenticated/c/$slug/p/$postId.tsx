@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import {CP} from "#/pages/c/c-p.tsx";
+import {CP} from "@/pages/c/c-p.tsx";
 
 export const Route = createFileRoute("/_authenticated/c/$slug/p/$postId")({
     component: RouteComponent,

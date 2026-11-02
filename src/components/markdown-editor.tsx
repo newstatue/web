@@ -5,7 +5,7 @@ import { Surface } from "@heroui/react"
 
 import "@milkdown/crepe/theme/common/style.css"
 import "@milkdown/crepe/theme/frame.css"
-import {crepeZhCN} from "#/lib/crepe-zh-cn.ts";
+import {crepeZhCN} from "@/lib/crepe-zh-cn.ts";
 
 type Props = {
     onChange: (markdown: string) => void

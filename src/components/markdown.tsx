@@ -14,7 +14,7 @@ import {
     CodeBlockCopyButton,
     CodeBlockHeader,
     CodeBlockTitle
-} from "#/components/ui/code-block.tsx";
+} from "@/components/ui/code-block.tsx";
 import {Code} from "lucide-react";
 
 type ElementProps = {

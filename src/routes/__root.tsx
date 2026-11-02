@@ -4,7 +4,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import "../styles.css";
-import {NotFound} from "#/pages/not-found.tsx";
+import {NotFound} from "@/pages/not-found.tsx";
 import type {QueryClient} from "@tanstack/react-query";
 
 interface RouterContext {

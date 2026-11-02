@@ -1,7 +1,7 @@
 import { CHeader } from "./c-header"
-import {CLeft} from "#/pages/c/c-left.tsx";
-import {CPostList} from "#/pages/c/c-post-list.tsx";
-import {CRight} from "#/pages/c/c-right.tsx";
+import {CLeft} from "@/pages/c/c-left.tsx";
+import {CPostList} from "@/pages/c/c-post-list.tsx";
+import {CRight} from "@/pages/c/c-right.tsx";
 
 type CProps = {
     slug: string

@@ -1,5 +1,5 @@
 import { Card, Spinner } from "@heroui/react"
-import { useGetApiCommunitiesBySlug } from "#/gen/api"
+import { useGetApiCommunitiesBySlug } from "@/gen/api"
 import {
     InfoIcon,
     UsersIcon,
