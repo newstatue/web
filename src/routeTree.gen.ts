@@ -13,13 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as ErrorRouteRouteImport } from './routes/error/route'
-import { Route as AuthenticatedCRouteRouteImport } from './routes/_authenticated/c/route'
 import { Route as AuthenticatedMeRouteImport } from './routes/_authenticated/me'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as ErrorComingSoonRouteImport } from './routes/error/coming-soon'
+import { Route as AuthenticatedCSlugRouteRouteImport } from './routes/_authenticated/c/$slug/route'
 import { Route as AuthenticatedCSlugIndexRouteImport } from './routes/_authenticated/c/$slug/index'
 import { Route as AuthenticatedCSlugPPostIdRouteImport } from './routes/_authenticated/c/$slug/p/$postId'
+import { Route as AuthenticatedCSlugPCreateRouteImport } from './routes/_authenticated/c/$slug/p/create'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,11 +40,6 @@ const ErrorRouteRoute = ErrorRouteRouteImport.update({
   id: '/error',
   path: '/error',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedCRouteRoute = AuthenticatedCRouteRouteImport.update({
-  id: '/c',
-  path: '/c',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMeRoute = AuthenticatedMeRouteImport.update({
   id: '/me',
@@ -65,41 +61,53 @@ const ErrorComingSoonRoute = ErrorComingSoonRouteImport.update({
   path: '/coming-soon',
   getParentRoute: () => ErrorRouteRoute,
 } as any)
+const AuthenticatedCSlugRouteRoute = AuthenticatedCSlugRouteRouteImport.update({
+  id: '/c/$slug',
+  path: '/c/$slug',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCSlugIndexRoute = AuthenticatedCSlugIndexRouteImport.update({
-  id: '/$slug/',
-  path: '/$slug/',
-  getParentRoute: () => AuthenticatedCRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedCSlugRouteRoute,
 } as any)
 const AuthenticatedCSlugPPostIdRoute =
   AuthenticatedCSlugPPostIdRouteImport.update({
-    id: '/$slug/p/$postId',
-    path: '/$slug/p/$postId',
-    getParentRoute: () => AuthenticatedCRouteRoute,
+    id: '/p/$postId',
+    path: '/p/$postId',
+    getParentRoute: () => AuthenticatedCSlugRouteRoute,
+  } as any)
+const AuthenticatedCSlugPCreateRoute =
+  AuthenticatedCSlugPCreateRouteImport.update({
+    id: '/p/create',
+    path: '/p/create',
+    getParentRoute: () => AuthenticatedCSlugRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/error': typeof ErrorRouteRouteWithChildren
-  '/c': typeof AuthenticatedCRouteRouteWithChildren
   '/me': typeof AuthenticatedMeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
+  '/c/$slug': typeof AuthenticatedCSlugRouteRouteWithChildren
   '/c/$slug/': typeof AuthenticatedCSlugIndexRoute
   '/c/$slug/p/$postId': typeof AuthenticatedCSlugPPostIdRoute
+  '/c/$slug/p/create': typeof AuthenticatedCSlugPCreateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/error': typeof ErrorRouteRouteWithChildren
-  '/c': typeof AuthenticatedCRouteRouteWithChildren
   '/me': typeof AuthenticatedMeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
   '/c/$slug': typeof AuthenticatedCSlugIndexRoute
   '/c/$slug/p/$postId': typeof AuthenticatedCSlugPPostIdRoute
+  '/c/$slug/p/create': typeof AuthenticatedCSlugPCreateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,13 +115,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/error': typeof ErrorRouteRouteWithChildren
-  '/_authenticated/c': typeof AuthenticatedCRouteRouteWithChildren
   '/_authenticated/me': typeof AuthenticatedMeRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/error/coming-soon': typeof ErrorComingSoonRoute
+  '/_authenticated/c/$slug': typeof AuthenticatedCSlugRouteRouteWithChildren
   '/_authenticated/c/$slug/': typeof AuthenticatedCSlugIndexRoute
   '/_authenticated/c/$slug/p/$postId': typeof AuthenticatedCSlugPPostIdRoute
+  '/_authenticated/c/$slug/p/create': typeof AuthenticatedCSlugPCreateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,38 +130,40 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/error'
-    | '/c'
     | '/me'
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
+    | '/c/$slug'
     | '/c/$slug/'
     | '/c/$slug/p/$postId'
+    | '/c/$slug/p/create'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/error'
-    | '/c'
     | '/me'
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
     | '/c/$slug'
     | '/c/$slug/p/$postId'
+    | '/c/$slug/p/create'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/error'
-    | '/_authenticated/c'
     | '/_authenticated/me'
     | '/auth/login'
     | '/auth/register'
     | '/error/coming-soon'
+    | '/_authenticated/c/$slug'
     | '/_authenticated/c/$slug/'
     | '/_authenticated/c/$slug/p/$postId'
+    | '/_authenticated/c/$slug/p/create'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -192,13 +203,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/c': {
-      id: '/_authenticated/c'
-      path: '/c'
-      fullPath: '/c'
-      preLoaderRoute: typeof AuthenticatedCRouteRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/me': {
       id: '/_authenticated/me'
       path: '/me'
@@ -227,44 +231,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorComingSoonRouteImport
       parentRoute: typeof ErrorRouteRoute
     }
+    '/_authenticated/c/$slug': {
+      id: '/_authenticated/c/$slug'
+      path: '/c/$slug'
+      fullPath: '/c/$slug'
+      preLoaderRoute: typeof AuthenticatedCSlugRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/c/$slug/': {
       id: '/_authenticated/c/$slug/'
-      path: '/$slug'
+      path: '/'
       fullPath: '/c/$slug/'
       preLoaderRoute: typeof AuthenticatedCSlugIndexRouteImport
-      parentRoute: typeof AuthenticatedCRouteRoute
+      parentRoute: typeof AuthenticatedCSlugRouteRoute
     }
     '/_authenticated/c/$slug/p/$postId': {
       id: '/_authenticated/c/$slug/p/$postId'
-      path: '/$slug/p/$postId'
+      path: '/p/$postId'
       fullPath: '/c/$slug/p/$postId'
       preLoaderRoute: typeof AuthenticatedCSlugPPostIdRouteImport
-      parentRoute: typeof AuthenticatedCRouteRoute
+      parentRoute: typeof AuthenticatedCSlugRouteRoute
+    }
+    '/_authenticated/c/$slug/p/create': {
+      id: '/_authenticated/c/$slug/p/create'
+      path: '/p/create'
+      fullPath: '/c/$slug/p/create'
+      preLoaderRoute: typeof AuthenticatedCSlugPCreateRouteImport
+      parentRoute: typeof AuthenticatedCSlugRouteRoute
     }
   }
 }
 
-interface AuthenticatedCRouteRouteChildren {
+interface AuthenticatedCSlugRouteRouteChildren {
   AuthenticatedCSlugIndexRoute: typeof AuthenticatedCSlugIndexRoute
   AuthenticatedCSlugPPostIdRoute: typeof AuthenticatedCSlugPPostIdRoute
+  AuthenticatedCSlugPCreateRoute: typeof AuthenticatedCSlugPCreateRoute
 }
 
-const AuthenticatedCRouteRouteChildren: AuthenticatedCRouteRouteChildren = {
-  AuthenticatedCSlugIndexRoute: AuthenticatedCSlugIndexRoute,
-  AuthenticatedCSlugPPostIdRoute: AuthenticatedCSlugPPostIdRoute,
-}
+const AuthenticatedCSlugRouteRouteChildren: AuthenticatedCSlugRouteRouteChildren =
+  {
+    AuthenticatedCSlugIndexRoute: AuthenticatedCSlugIndexRoute,
+    AuthenticatedCSlugPPostIdRoute: AuthenticatedCSlugPPostIdRoute,
+    AuthenticatedCSlugPCreateRoute: AuthenticatedCSlugPCreateRoute,
+  }
 
-const AuthenticatedCRouteRouteWithChildren =
-  AuthenticatedCRouteRoute._addFileChildren(AuthenticatedCRouteRouteChildren)
+const AuthenticatedCSlugRouteRouteWithChildren =
+  AuthenticatedCSlugRouteRoute._addFileChildren(
+    AuthenticatedCSlugRouteRouteChildren,
+  )
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedCRouteRoute: typeof AuthenticatedCRouteRouteWithChildren
   AuthenticatedMeRoute: typeof AuthenticatedMeRoute
+  AuthenticatedCSlugRouteRoute: typeof AuthenticatedCSlugRouteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedCRouteRoute: AuthenticatedCRouteRouteWithChildren,
   AuthenticatedMeRoute: AuthenticatedMeRoute,
+  AuthenticatedCSlugRouteRoute: AuthenticatedCSlugRouteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -1,3 +1,18 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 @import "./global.css";
+/*@import "./custom.css";*/
+
+.markdown-editor .milkdown {
+    /* 正文 */
+    --crepe-font-default: "Noto Sans SC", sans-serif;
+
+    /* 标题 */
+    --crepe-font-title: "Noto Sans SC", sans-serif;
+
+    /* 代码 */
+    --crepe-font-code: "JetBrains Mono", monospace;
+
+    /* 基础字号 */
+    --crepe-base-font-size: 16px;
+}

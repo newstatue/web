@@ -11,6 +11,8 @@ export interface Community {
   createdAt: string;
   description: string;
   id: string;
+  isMember: boolean;
+  memberRole: string;
   name: string;
   ownerId: string;
   slug: string;

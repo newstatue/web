@@ -8,8 +8,7 @@ type CPProps = {
 }
 
 export function CP({ slug, postId }: CPProps) {
-    const { data, isPending, isError } =
-        useGetApiCommunitiesBySlugPostsByPostId(slug, postId)
+    const { data, isPending, isError } = useGetApiCommunitiesBySlugPostsByPostId(slug, postId)
 
     if (isPending) {
         return <div>加载中...</div>
