@@ -11,6 +11,7 @@ const languages = {
   bash: () => import("shiki/langs/shellscript.mjs"),
   css: () => import("shiki/langs/css.mjs"),
   diff: () => import("shiki/langs/diff.mjs"),
+  go: () => import("shiki/langs/go.mjs"),
   html: () => import("shiki/langs/html.mjs"),
   javascript: () => import("shiki/langs/javascript.mjs"),
   json: () => import("shiki/langs/json.mjs"),

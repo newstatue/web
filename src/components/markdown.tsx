@@ -1,4 +1,5 @@
-import {type CodeProps, surfaceVariants, Table, Typography} from "@heroui/react"
+import { useHighlightedCode } from "@/hooks/use-highlighted-code"
+import {Code, type CodeProps, surfaceVariants, Table, Typography} from "@heroui/react"
 import ReactMarkdown, { type Components } from "react-markdown"
 import remarkGfm from "remark-gfm"
 import {
@@ -12,10 +13,10 @@ import {
     CodeBlock,
     CodeBlockActions, CodeBlockContent,
     CodeBlockCopyButton,
+    CodeBlockLine,
     CodeBlockHeader,
     CodeBlockTitle
 } from "@/components/ui/code-block.tsx";
-import {Code} from "lucide-react";
 
 type ElementProps = {
     children?: ReactNode
@@ -58,15 +59,15 @@ const components: Components = {
     ),
 
     // 围栏代码块和缩进代码块
-    pre: ({ children }) => {
-        if (!isValidElement<CodeProps>(children)) {
+    pre: function MarkdownPre({ children }) {
+        const codeElement = isValidElement<CodeProps>(children) ? children : null
+        const code = String(codeElement?.props.children ?? "").replace(/\n$/, "")
+        const language = /language-(\S+)/.exec(codeElement?.props.className ?? "")?.[1]
+        const lines = useHighlightedCode(code, language ?? "text")
+
+        if (!codeElement) {
             return <pre>{children}</pre>
         }
-
-        const { children: content, className } = children.props
-        const code = String(content ?? "").replace(/\n$/, "")
-        const language = /language-(\S+)/.exec(className ?? "")?.[1]
-
         return (
             <CodeBlock className={surfaceVariants({ variant: "default" })}>
                 <CodeBlockHeader>
@@ -79,7 +80,11 @@ const components: Components = {
                     </CodeBlockActions>
                 </CodeBlockHeader>
 
-                <CodeBlockContent >{code}</CodeBlockContent>
+                <CodeBlockContent>
+                    {lines.map((line, index) => (
+                        <CodeBlockLine key={index}>{line}</CodeBlockLine>
+                    ))}
+                </CodeBlockContent>
             </CodeBlock>
         )
     },
