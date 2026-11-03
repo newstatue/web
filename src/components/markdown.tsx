@@ -1,5 +1,5 @@
-import { useHighlightedCode } from "@/hooks/use-highlighted-code"
-import {Code, type CodeProps, surfaceVariants, Table, Typography} from "@heroui/react"
+import { CodeBlock } from "@heroui-pro/react/code-block"
+import {Code, type CodeProps, Table, Typography} from "@heroui/react"
 import ReactMarkdown, { type Components } from "react-markdown"
 import remarkGfm from "remark-gfm"
 import {
@@ -9,14 +9,7 @@ import {
     type ReactElement,
     type ReactNode,
 } from "react"
-import {
-    CodeBlock,
-    CodeBlockActions, CodeBlockContent,
-    CodeBlockCopyButton,
-    CodeBlockLine,
-    CodeBlockHeader,
-    CodeBlockTitle
-} from "@/components/ui/code-block.tsx";
+
 
 type ElementProps = {
     children?: ReactNode
@@ -63,28 +56,17 @@ const components: Components = {
         const codeElement = isValidElement<CodeProps>(children) ? children : null
         const code = String(codeElement?.props.children ?? "").replace(/\n$/, "")
         const language = /language-(\S+)/.exec(codeElement?.props.className ?? "")?.[1]
-        const lines = useHighlightedCode(code, language ?? "text")
 
         if (!codeElement) {
             return <pre>{children}</pre>
         }
         return (
-            <CodeBlock className={surfaceVariants({ variant: "default" })}>
-                <CodeBlockHeader>
-                    <CodeBlockTitle>
-                        {language ?? "代码"}
-                    </CodeBlockTitle>
-
-                    <CodeBlockActions>
-                        <CodeBlockCopyButton value={code} />
-                    </CodeBlockActions>
-                </CodeBlockHeader>
-
-                <CodeBlockContent>
-                    {lines.map((line, index) => (
-                        <CodeBlockLine key={index}>{line}</CodeBlockLine>
-                    ))}
-                </CodeBlockContent>
+            <CodeBlock>
+                <CodeBlock.Header>
+                    <span className="text-xs text-muted">{language ?? "代码"}</span>
+                    <CodeBlock.CopyButton code={code} aria-label="复制代码" />
+                </CodeBlock.Header>
+                <CodeBlock.Code code={code} language={language ?? "plaintext"} />
             </CodeBlock>
         )
     },
