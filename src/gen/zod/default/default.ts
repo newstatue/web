@@ -136,6 +136,32 @@ export const PostApiCommunitiesResponse = zod.object({
 })
 
 /**
+ * @summary Put API communities posts by post ID bookmark
+ */
+export const PutApiCommunitiesPostsByPostIdBookmarkParams = zod.object({
+  "postId": zod.uuid()
+})
+
+export const PutApiCommunitiesPostsByPostIdBookmarkBody = zod.object({
+  "bookmarked": zod.boolean()
+})
+
+export const PutApiCommunitiesPostsByPostIdBookmarkResponse = zod.void()
+
+/**
+ * @summary Put API communities posts by post ID vote
+ */
+export const PutApiCommunitiesPostsByPostIdVoteParams = zod.object({
+  "postId": zod.uuid()
+})
+
+export const PutApiCommunitiesPostsByPostIdVoteBody = zod.object({
+  "value": zod.union([zod.literal(-1),zod.literal(0),zod.literal(1)])
+})
+
+export const PutApiCommunitiesPostsByPostIdVoteResponse = zod.void()
+
+/**
  * @summary Get API communities by slug
  */
 export const GetApiCommunitiesBySlugParams = zod.object({
@@ -208,7 +234,8 @@ export const GetApiCommunitiesBySlugPostsResponse = zod.object({
   "createdAt": zod.iso.datetime({"offset":true}),
   "id": zod.uuid(),
   "title": zod.string(),
-  "updatedAt": zod.iso.datetime({"offset":true})
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "voteCount": zod.int()
 })).nullable(),
   "limit": zod.int(),
   "page": zod.int(),
@@ -241,7 +268,8 @@ export const PostApiCommunitiesBySlugPostsResponse = zod.object({
   "createdAt": zod.iso.datetime({"offset":true}),
   "id": zod.uuid(),
   "title": zod.string(),
-  "updatedAt": zod.iso.datetime({"offset":true})
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "voteCount": zod.int()
 })
 
 /**
@@ -260,6 +288,7 @@ export const GetApiCommunitiesBySlugPostsByPostIdResponse = zod.object({
   "createdAt": zod.iso.datetime({"offset":true}),
   "id": zod.uuid(),
   "title": zod.string(),
-  "updatedAt": zod.iso.datetime({"offset":true})
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "voteCount": zod.int()
 })
 

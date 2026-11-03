@@ -6,16 +6,22 @@
  */
 
 export * from './community.ts';
+export * from './create.ts';
 export * from './createCommunity.ts';
 export * from './createCommunityPost.ts';
+export * from './createPost.ts';
 export * from './errorDetail.ts';
 export * from './errorModel.ts';
 export * from './getApiCommunitesBySlugPostsParams.ts';
 export * from './getApiCommunitiesBySlugPostsParams.ts';
 export * from './getApiCommunitiesParams.ts';
+export * from './join.ts';
 export * from './joinCommunity.ts';
 export * from './loginUser.ts';
 export * from './post.ts';
+export * from './putPostBookmark.ts';
+export * from './putPostVote.ts';
+export * from './putPostVoteValue.ts';
 export * from './registerUser.ts';
 export * from './resultCommunity.ts';
 export * from './resultPost.ts';

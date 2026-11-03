@@ -15,4 +15,5 @@ export interface Post {
   id: string;
   title: string;
   updatedAt: string;
+  voteCount: number;
 }

@@ -1,3 +1,4 @@
+import { CPostActions } from "./c-post-actions"
 import {Card} from "@heroui/react"
 import { useGetApiCommunitiesBySlugPostsByPostId } from "@/gen/api"
 import {Markdown} from "@/components/markdown.tsx";
@@ -40,6 +41,9 @@ export function CP({ slug, postId }: CPProps) {
                 <Card.Content>
                     <Markdown>{post.content}</Markdown>
                 </Card.Content>
+                <Card.Footer>
+                    <CPostActions postId={post.id} slug={slug} voteCount={post.voteCount} />
+                </Card.Footer>
             </Card>
         </article>
     )

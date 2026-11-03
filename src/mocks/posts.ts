@@ -1,4 +1,5 @@
 interface Post {
+    voteCount: number
     authorId: string
     communityId: string
     content: string
@@ -12,6 +13,7 @@ interface Post {
 export const mockPosts: Post[] = [
     {
         id: "1",
+        voteCount: 2468,
         authorId: "user-1",
         communityId: "community-1",
         title: "大家平时都使用什么 Go Web 框架？",
@@ -46,6 +48,7 @@ func main() {
     },
     {
         id: "2",
+        voteCount: 12800,
         authorId: "user-2",
         communityId: "community-1",
         title: "分享一个自己开发的开源社区项目",
@@ -83,6 +86,7 @@ func main() {
     },
     {
         id: "3",
+        voteCount: 56000,
         authorId: "user-3",
         communityId: "community-1",
         title: "TanStack Router 使用体验怎么样？",
@@ -127,6 +131,7 @@ function PostPage() {
     },
     {
         id: "4",
+        voteCount: 10000,
         authorId: "user-1",
         communityId: "community-1",
         title: "Markdown 综合渲染测试",

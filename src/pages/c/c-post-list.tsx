@@ -1,11 +1,12 @@
+import { CPostActions } from "./c-post-actions"
 import removeMarkdown from "remove-markdown"
-import { Button, ButtonGroup, Card, Spinner } from "@heroui/react"
+import { Button, Card, Spinner } from "@heroui/react"
 import { Link } from "@/components/link"
 import { useGetApiCommunitiesBySlugPosts } from "@/gen/api"
 import {
     ShareFatIcon,
-    ThumbsDownIcon,
-    ThumbsUpIcon,
+
+
 } from "@phosphor-icons/react"
 
 type CPostListProps = {
@@ -70,20 +71,7 @@ export function CPostList({ slug }: CPostListProps) {
                     </Card.Content>
 
                     <Card.Footer className="relative z-10 gap-2">
-                        <ButtonGroup size="sm" variant="tertiary">
-                            <Button aria-label="喜欢">
-                                <ThumbsUpIcon />
-                                <span className="text-xs font-semibold">
-                                    2.4K
-                                </span>
-                            </Button>
-
-                            <ButtonGroup.Separator />
-
-                            <Button isIconOnly aria-label="不喜欢">
-                                <ThumbsDownIcon />
-                            </Button>
-                        </ButtonGroup>
+                        <CPostActions postId={post.id} slug={slug} voteCount={post.voteCount} />
 
                         <Button
                             variant="tertiary"

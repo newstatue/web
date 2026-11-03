@@ -25,14 +25,16 @@ import type {
 
 import type {
   Community,
-  CreateCommunity,
-  CreateCommunityPost,
+  Create,
+  CreatePost,
   ErrorModel,
   GetApiCommunitiesBySlugPostsParams,
   GetApiCommunitiesParams,
-  JoinCommunity,
+  Join,
   LoginUser,
   Post,
+  PutPostBookmark,
+  PutPostVote,
   RegisterUser,
   ResultCommunity,
   ResultPost,
@@ -625,7 +627,7 @@ export const getPostApiCommunitiesUrl = () => {
 /**
  * @summary Post API communities
  */
-export const postApiCommunities = async (createCommunity: NonReadonly<CreateCommunity>, options?: RequestInit): Promise<postApiCommunitiesResponseSuccess> => {
+export const postApiCommunities = async (create: NonReadonly<Create>, options?: RequestInit): Promise<postApiCommunitiesResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -646,7 +648,7 @@ const res = await fetch(getPostApiCommunitiesUrl(),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(createCommunity)
+    body: JSON.stringify(create)
   }
 )
 
@@ -698,9 +700,9 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiCommunitiesMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommunities>>>
-    export type PostApiCommunitiesMutationBody = NonReadonly<CreateCommunity>
+    export type PostApiCommunitiesMutationBody = NonReadonly<Create>
     export type PostApiCommunitiesMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiCommunitiesMutationVariables = {data: NonReadonly<CreateCommunity>}
+    export type PostApiCommunitiesMutationVariables = {data: NonReadonly<Create>}
 
     /**
  * @summary Post API communities
@@ -714,6 +716,244 @@ export const usePostApiCommunities = <TError = globalThis.Error & { info?: Error
         TContext
       > => {
       return useMutation(getPostApiCommunitiesMutationOptions(options), queryClient);
+    }
+    export type putApiCommunitiesPostsByPostIdBookmarkResponse204 = {
+  data: void
+  status: 204
+}
+
+export type putApiCommunitiesPostsByPostIdBookmarkResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+
+export type putApiCommunitiesPostsByPostIdBookmarkResponseSuccess = (putApiCommunitiesPostsByPostIdBookmarkResponse204) & {
+  headers: Headers;
+};
+export type putApiCommunitiesPostsByPostIdBookmarkResponseError = (putApiCommunitiesPostsByPostIdBookmarkResponseDefault) & {
+  headers: Headers;
+};
+
+export const getPutApiCommunitiesPostsByPostIdBookmarkUrl = (postId: string,) => {
+
+
+
+
+  return `/api/communities/posts/${postId}/bookmark`
+}
+
+/**
+ * @summary Put API communities posts by post ID bookmark
+ */
+export const putApiCommunitiesPostsByPostIdBookmark = async (postId: string,
+    putPostBookmark: NonReadonly<PutPostBookmark>, options?: RequestInit): Promise<putApiCommunitiesPostsByPostIdBookmarkResponseSuccess> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPutApiCommunitiesPostsByPostIdBookmarkUrl(postId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(putPostBookmark)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
+
+    const err: globalThis.Error & {info?: putApiCommunitiesPostsByPostIdBookmarkResponseError['data'], status?: number} = new globalThis.Error();
+    const data : putApiCommunitiesPostsByPostIdBookmarkResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: putApiCommunitiesPostsByPostIdBookmarkResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putApiCommunitiesPostsByPostIdBookmarkResponseSuccess
+}
+
+
+
+
+
+export const getPutApiCommunitiesPostsByPostIdBookmarkMutationKey = () => ['putApiCommunitiesPostsByPostIdBookmark'] as const;
+
+export const getPutApiCommunitiesPostsByPostIdBookmarkMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, TError,PutApiCommunitiesPostsByPostIdBookmarkMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, TError,PutApiCommunitiesPostsByPostIdBookmarkMutationVariables, TContext> => {
+
+const mutationKey = getPutApiCommunitiesPostsByPostIdBookmarkMutationKey();
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, PutApiCommunitiesPostsByPostIdBookmarkMutationVariables> = (props) => {
+          const {postId,data} = props ?? {};
+
+          return  putApiCommunitiesPostsByPostIdBookmark(postId,data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiCommunitiesPostsByPostIdBookmarkMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>>
+    export type PutApiCommunitiesPostsByPostIdBookmarkMutationBody = NonReadonly<PutPostBookmark>
+    export type PutApiCommunitiesPostsByPostIdBookmarkMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PutApiCommunitiesPostsByPostIdBookmarkMutationVariables = {postId: string;data: NonReadonly<PutPostBookmark>}
+
+    /**
+ * @summary Put API communities posts by post ID bookmark
+ */
+export const usePutApiCommunitiesPostsByPostIdBookmark = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, TError,PutApiCommunitiesPostsByPostIdBookmarkMutationVariables, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>,
+        TError,
+        PutApiCommunitiesPostsByPostIdBookmarkMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPutApiCommunitiesPostsByPostIdBookmarkMutationOptions(options), queryClient);
+    }
+    export type putApiCommunitiesPostsByPostIdVoteResponse204 = {
+  data: void
+  status: 204
+}
+
+export type putApiCommunitiesPostsByPostIdVoteResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+
+export type putApiCommunitiesPostsByPostIdVoteResponseSuccess = (putApiCommunitiesPostsByPostIdVoteResponse204) & {
+  headers: Headers;
+};
+export type putApiCommunitiesPostsByPostIdVoteResponseError = (putApiCommunitiesPostsByPostIdVoteResponseDefault) & {
+  headers: Headers;
+};
+
+export const getPutApiCommunitiesPostsByPostIdVoteUrl = (postId: string,) => {
+
+
+
+
+  return `/api/communities/posts/${postId}/vote`
+}
+
+/**
+ * @summary Put API communities posts by post ID vote
+ */
+export const putApiCommunitiesPostsByPostIdVote = async (postId: string,
+    putPostVote: NonReadonly<PutPostVote>, options?: RequestInit): Promise<putApiCommunitiesPostsByPostIdVoteResponseSuccess> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPutApiCommunitiesPostsByPostIdVoteUrl(postId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(putPostVote)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
+
+    const err: globalThis.Error & {info?: putApiCommunitiesPostsByPostIdVoteResponseError['data'], status?: number} = new globalThis.Error();
+    const data : putApiCommunitiesPostsByPostIdVoteResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: putApiCommunitiesPostsByPostIdVoteResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putApiCommunitiesPostsByPostIdVoteResponseSuccess
+}
+
+
+
+
+
+export const getPutApiCommunitiesPostsByPostIdVoteMutationKey = () => ['putApiCommunitiesPostsByPostIdVote'] as const;
+
+export const getPutApiCommunitiesPostsByPostIdVoteMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, TError,PutApiCommunitiesPostsByPostIdVoteMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, TError,PutApiCommunitiesPostsByPostIdVoteMutationVariables, TContext> => {
+
+const mutationKey = getPutApiCommunitiesPostsByPostIdVoteMutationKey();
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, PutApiCommunitiesPostsByPostIdVoteMutationVariables> = (props) => {
+          const {postId,data} = props ?? {};
+
+          return  putApiCommunitiesPostsByPostIdVote(postId,data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiCommunitiesPostsByPostIdVoteMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>>
+    export type PutApiCommunitiesPostsByPostIdVoteMutationBody = NonReadonly<PutPostVote>
+    export type PutApiCommunitiesPostsByPostIdVoteMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PutApiCommunitiesPostsByPostIdVoteMutationVariables = {postId: string;data: NonReadonly<PutPostVote>}
+
+    /**
+ * @summary Put API communities posts by post ID vote
+ */
+export const usePutApiCommunitiesPostsByPostIdVote = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, TError,PutApiCommunitiesPostsByPostIdVoteMutationVariables, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>,
+        TError,
+        PutApiCommunitiesPostsByPostIdVoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPutApiCommunitiesPostsByPostIdVoteMutationOptions(options), queryClient);
     }
     export type getApiCommunitiesBySlugResponse200 = {
   data: Community
@@ -847,7 +1087,7 @@ export function useGetApiCommunitiesBySlug<TData = Awaited<ReturnType<typeof get
 
 
 export type deleteApiCommunitiesBySlugMembersMeResponse200 = {
-  data: JoinCommunity
+  data: Join
   status: 200
 }
 
@@ -951,7 +1191,7 @@ export const useDeleteApiCommunitiesBySlugMembersMe = <TError = globalThis.Error
       return useMutation(getDeleteApiCommunitiesBySlugMembersMeMutationOptions(options), queryClient);
     }
     export type postApiCommunitiesBySlugMembersMeResponse200 = {
-  data: JoinCommunity
+  data: Join
   status: 200
 }
 
@@ -1229,7 +1469,7 @@ export const getPostApiCommunitiesBySlugPostsUrl = (slug: string,) => {
  * @summary Post API communities by slug posts
  */
 export const postApiCommunitiesBySlugPosts = async (slug: string,
-    createCommunityPost: NonReadonly<CreateCommunityPost>, options?: RequestInit): Promise<postApiCommunitiesBySlugPostsResponseSuccess> => {
+    createPost: NonReadonly<CreatePost>, options?: RequestInit): Promise<postApiCommunitiesBySlugPostsResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -1250,7 +1490,7 @@ const res = await fetch(getPostApiCommunitiesBySlugPostsUrl(slug),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(createCommunityPost)
+    body: JSON.stringify(createPost)
   }
 )
 
@@ -1302,9 +1542,9 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiCommunitiesBySlugPostsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>>
-    export type PostApiCommunitiesBySlugPostsMutationBody = NonReadonly<CreateCommunityPost>
+    export type PostApiCommunitiesBySlugPostsMutationBody = NonReadonly<CreatePost>
     export type PostApiCommunitiesBySlugPostsMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiCommunitiesBySlugPostsMutationVariables = {slug: string;data: NonReadonly<CreateCommunityPost>}
+    export type PostApiCommunitiesBySlugPostsMutationVariables = {slug: string;data: NonReadonly<CreatePost>}
 
     /**
  * @summary Post API communities by slug posts
