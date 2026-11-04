@@ -8,18 +8,18 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Post API auth login
+ * @summary 用户登录
  */
-export const PostApiAuthLoginHeader = zod.object({
+export const PostAuthLoginHeader = zod.object({
   "User-Agent": zod.string().optional()
 })
 
-export const PostApiAuthLoginBody = zod.object({
+export const PostAuthLoginBody = zod.object({
   "email": zod.email(),
   "password": zod.string()
 })
 
-export const PostApiAuthLoginResponse = zod.object({
+export const PostAuthLoginResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "email": zod.string(),
   "email_verified": zod.boolean(),
@@ -29,9 +29,9 @@ export const PostApiAuthLoginResponse = zod.object({
 })
 
 /**
- * @summary Get API auth me
+ * @summary 获取当前用户
  */
-export const GetApiAuthMeResponse = zod.object({
+export const GetAuthMeResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "email": zod.string(),
   "email_verified": zod.boolean(),
@@ -41,24 +41,23 @@ export const GetApiAuthMeResponse = zod.object({
 })
 
 /**
- * @summary Post API auth register
+ * @summary 注册用户
  */
-export const postApiAuthRegisterBodyNameMin = 2;
-export const postApiAuthRegisterBodyNameMax = 50;
+export const postAuthRegisterBodyNameMin = 2;
+export const postAuthRegisterBodyNameMax = 50;
 
-export const postApiAuthRegisterBodyPasswordMin = 8;
-export const postApiAuthRegisterBodyPasswordMax = 128;
+export const postAuthRegisterBodyPasswordMin = 8;
+export const postAuthRegisterBodyPasswordMax = 128;
 
 
 
-export const PostApiAuthRegisterBody = zod.object({
+export const PostAuthRegisterBody = zod.object({
   "email": zod.email(),
-  "image": zod.url().optional(),
-  "name": zod.string().min(postApiAuthRegisterBodyNameMin).max(postApiAuthRegisterBodyNameMax),
-  "password": zod.string().min(postApiAuthRegisterBodyPasswordMin).max(postApiAuthRegisterBodyPasswordMax)
+  "name": zod.string().min(postAuthRegisterBodyNameMin).max(postAuthRegisterBodyNameMax),
+  "password": zod.string().min(postAuthRegisterBodyPasswordMin).max(postAuthRegisterBodyPasswordMax)
 })
 
-export const PostApiAuthRegisterResponse = zod.object({
+export const PostAuthRegisterResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "email": zod.string(),
   "email_verified": zod.boolean(),
@@ -68,21 +67,21 @@ export const PostApiAuthRegisterResponse = zod.object({
 })
 
 /**
- * @summary Get API communities
+ * @summary 获取社区列表
  */
-export const getApiCommunitiesQueryPageDefault = 1;
+export const getCommunitiesQueryPageDefault = 1;
 
-export const getApiCommunitiesQueryLimitDefault = 20;
-export const getApiCommunitiesQueryLimitMax = 100;
+export const getCommunitiesQueryLimitDefault = 20;
+export const getCommunitiesQueryLimitMax = 100;
 
 
 
-export const GetApiCommunitiesQueryParams = zod.object({
-  "page": zod.int().min(1).default(getApiCommunitiesQueryPageDefault),
-  "limit": zod.int().min(1).max(getApiCommunitiesQueryLimitMax).default(getApiCommunitiesQueryLimitDefault)
+export const GetCommunitiesQueryParams = zod.object({
+  "page": zod.int().min(1).default(getCommunitiesQueryPageDefault),
+  "limit": zod.int().min(1).max(getCommunitiesQueryLimitMax).default(getCommunitiesQueryLimitDefault)
 })
 
-export const GetApiCommunitiesResponse = zod.object({
+export const GetCommunitiesResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "items": zod.array(zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
@@ -102,27 +101,27 @@ export const GetApiCommunitiesResponse = zod.object({
 })
 
 /**
- * @summary Post API communities
+ * @summary 创建社区
  */
-export const postApiCommunitiesBodyDescriptionMax = 1000;
+export const postCommunitiesBodyDescriptionMax = 1000;
 
-export const postApiCommunitiesBodyNameMax = 100;
+export const postCommunitiesBodyNameMax = 100;
 
-export const postApiCommunitiesBodySlugMin = 3;
-export const postApiCommunitiesBodySlugMax = 32;
-
-
-export const postApiCommunitiesBodySlugRegExp = new RegExp('^[a-z0-9]+(-[a-z0-9]+)*$');
+export const postCommunitiesBodySlugMin = 3;
+export const postCommunitiesBodySlugMax = 32;
 
 
-export const PostApiCommunitiesBody = zod.object({
-  "description": zod.string().max(postApiCommunitiesBodyDescriptionMax),
-  "name": zod.string().min(1).max(postApiCommunitiesBodyNameMax),
+export const postCommunitiesBodySlugRegExp = new RegExp('^[a-z0-9]+(-[a-z0-9]+)*$');
+
+
+export const PostCommunitiesBody = zod.object({
+  "description": zod.string().max(postCommunitiesBodyDescriptionMax),
+  "name": zod.string().min(1).max(postCommunitiesBodyNameMax),
   "ownerId": zod.uuid(),
-  "slug": zod.string().min(postApiCommunitiesBodySlugMin).max(postApiCommunitiesBodySlugMax).regex(postApiCommunitiesBodySlugRegExp)
+  "slug": zod.string().min(postCommunitiesBodySlugMin).max(postCommunitiesBodySlugMax).regex(postCommunitiesBodySlugRegExp)
 })
 
-export const PostApiCommunitiesResponse = zod.object({
+export const PostCommunitiesResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "createdAt": zod.iso.datetime({"offset":true}),
   "description": zod.string(),
@@ -136,39 +135,39 @@ export const PostApiCommunitiesResponse = zod.object({
 })
 
 /**
- * @summary Put API communities posts by post ID bookmark
+ * @summary 设置帖子收藏
  */
-export const PutApiCommunitiesPostsByPostIdBookmarkParams = zod.object({
+export const PutCommunitiesPostsByPostIdBookmarkParams = zod.object({
   "postId": zod.uuid()
 })
 
-export const PutApiCommunitiesPostsByPostIdBookmarkBody = zod.object({
+export const PutCommunitiesPostsByPostIdBookmarkBody = zod.object({
   "bookmarked": zod.boolean()
 })
 
-export const PutApiCommunitiesPostsByPostIdBookmarkResponse = zod.void()
+export const PutCommunitiesPostsByPostIdBookmarkResponse = zod.void()
 
 /**
- * @summary Put API communities posts by post ID vote
+ * @summary 设置帖子投票
  */
-export const PutApiCommunitiesPostsByPostIdVoteParams = zod.object({
+export const PutCommunitiesPostsByPostIdVoteParams = zod.object({
   "postId": zod.uuid()
 })
 
-export const PutApiCommunitiesPostsByPostIdVoteBody = zod.object({
+export const PutCommunitiesPostsByPostIdVoteBody = zod.object({
   "value": zod.union([zod.literal(-1),zod.literal(0),zod.literal(1)])
 })
 
-export const PutApiCommunitiesPostsByPostIdVoteResponse = zod.void()
+export const PutCommunitiesPostsByPostIdVoteResponse = zod.void()
 
 /**
- * @summary Get API communities by slug
+ * @summary 获取社区详情
  */
-export const GetApiCommunitiesBySlugParams = zod.object({
+export const GetCommunitiesBySlugParams = zod.object({
   "slug": zod.string()
 })
 
-export const GetApiCommunitiesBySlugResponse = zod.object({
+export const GetCommunitiesBySlugResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "createdAt": zod.iso.datetime({"offset":true}),
   "description": zod.string(),
@@ -182,49 +181,38 @@ export const GetApiCommunitiesBySlugResponse = zod.object({
 })
 
 /**
- * @summary Delete API communities by slug members me
+ * @summary 设置当前用户的社区加入状态
  */
-export const DeleteApiCommunitiesBySlugMembersMeParams = zod.object({
+export const PutCommunitiesBySlugMembersMeParams = zod.object({
   "slug": zod.string()
 })
 
-export const DeleteApiCommunitiesBySlugMembersMeResponse = zod.object({
-  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
+export const PutCommunitiesBySlugMembersMeBody = zod.object({
   "joined": zod.boolean()
 })
 
+export const PutCommunitiesBySlugMembersMeResponse = zod.void()
+
 /**
- * @summary Post API communities by slug members me
+ * @summary 获取社区帖子列表
  */
-export const PostApiCommunitiesBySlugMembersMeParams = zod.object({
+export const GetCommunitiesBySlugPostsParams = zod.object({
   "slug": zod.string()
 })
 
-export const PostApiCommunitiesBySlugMembersMeResponse = zod.object({
-  "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
-  "joined": zod.boolean()
+export const getCommunitiesBySlugPostsQueryPageDefault = 1;
+
+export const getCommunitiesBySlugPostsQueryLimitDefault = 20;
+export const getCommunitiesBySlugPostsQueryLimitMax = 100;
+
+
+
+export const GetCommunitiesBySlugPostsQueryParams = zod.object({
+  "page": zod.int().min(1).default(getCommunitiesBySlugPostsQueryPageDefault),
+  "limit": zod.int().min(1).max(getCommunitiesBySlugPostsQueryLimitMax).default(getCommunitiesBySlugPostsQueryLimitDefault)
 })
 
-/**
- * @summary Get API communities by slug posts
- */
-export const GetApiCommunitiesBySlugPostsParams = zod.object({
-  "slug": zod.string()
-})
-
-export const getApiCommunitiesBySlugPostsQueryPageDefault = 1;
-
-export const getApiCommunitiesBySlugPostsQueryLimitDefault = 20;
-export const getApiCommunitiesBySlugPostsQueryLimitMax = 100;
-
-
-
-export const GetApiCommunitiesBySlugPostsQueryParams = zod.object({
-  "page": zod.int().min(1).default(getApiCommunitiesBySlugPostsQueryPageDefault),
-  "limit": zod.int().min(1).max(getApiCommunitiesBySlugPostsQueryLimitMax).default(getApiCommunitiesBySlugPostsQueryLimitDefault)
-})
-
-export const GetApiCommunitiesBySlugPostsResponse = zod.object({
+export const GetCommunitiesBySlugPostsResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "items": zod.array(zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
@@ -243,24 +231,24 @@ export const GetApiCommunitiesBySlugPostsResponse = zod.object({
 })
 
 /**
- * @summary Post API communities by slug posts
+ * @summary 创建帖子
  */
-export const PostApiCommunitiesBySlugPostsParams = zod.object({
+export const PostCommunitiesBySlugPostsParams = zod.object({
   "slug": zod.string()
 })
 
-export const postApiCommunitiesBySlugPostsBodyContentMax = 50000;
+export const postCommunitiesBySlugPostsBodyContentMax = 50000;
 
-export const postApiCommunitiesBySlugPostsBodyTitleMax = 200;
+export const postCommunitiesBySlugPostsBodyTitleMax = 200;
 
 
 
-export const PostApiCommunitiesBySlugPostsBody = zod.object({
-  "content": zod.string().min(1).max(postApiCommunitiesBySlugPostsBodyContentMax),
-  "title": zod.string().min(1).max(postApiCommunitiesBySlugPostsBodyTitleMax)
+export const PostCommunitiesBySlugPostsBody = zod.object({
+  "content": zod.string().min(1).max(postCommunitiesBySlugPostsBodyContentMax),
+  "title": zod.string().min(1).max(postCommunitiesBySlugPostsBodyTitleMax)
 })
 
-export const PostApiCommunitiesBySlugPostsResponse = zod.object({
+export const PostCommunitiesBySlugPostsResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "authorId": zod.uuid(),
   "communityId": zod.uuid(),
@@ -273,14 +261,14 @@ export const PostApiCommunitiesBySlugPostsResponse = zod.object({
 })
 
 /**
- * @summary Get API communities by slug posts by post ID
+ * @summary 获取帖子详情
  */
-export const GetApiCommunitiesBySlugPostsByPostIdParams = zod.object({
+export const GetCommunitiesBySlugPostsByPostIdParams = zod.object({
   "slug": zod.string(),
   "postId": zod.uuid()
 })
 
-export const GetApiCommunitiesBySlugPostsByPostIdResponse = zod.object({
+export const GetCommunitiesBySlugPostsByPostIdResponse = zod.object({
   "$schema": zod.url().optional().describe('A URL to the JSON Schema for this object.'),
   "authorId": zod.uuid(),
   "communityId": zod.uuid(),
@@ -291,4 +279,13 @@ export const GetApiCommunitiesBySlugPostsByPostIdResponse = zod.object({
   "updatedAt": zod.iso.datetime({"offset":true}),
   "voteCount": zod.int()
 })
+
+/**
+ * @summary 更新当前用户头像
+ */
+export const PutUserAvatarBody = zod.object({
+  "image": zod.string()
+})
+
+export const PutUserAvatarResponse = zod.void()
 

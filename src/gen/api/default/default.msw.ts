@@ -18,11 +18,12 @@ import type {
   Community,
   Create,
   CreatePost,
-  Join,
   LoginUser,
   Post,
+  PutMembershipInputBody,
   PutPostBookmark,
   PutPostVote,
+  PutUserAvatarBody,
   RegisterUser,
   ResultCommunity,
   ResultPost,
@@ -30,83 +31,81 @@ import type {
 } from '../models';
 
 import {
-  getDeleteApiCommunitiesBySlugMembersMeResponseMock,
-  getGetApiAuthMeResponseMock,
-  getGetApiCommunitiesBySlugPostsByPostIdResponseMock,
-  getGetApiCommunitiesBySlugPostsResponseMock,
-  getGetApiCommunitiesBySlugResponseMock,
-  getGetApiCommunitiesResponseMock,
-  getPostApiAuthLoginResponseMock,
-  getPostApiAuthRegisterResponseMock,
-  getPostApiCommunitiesBySlugMembersMeResponseMock,
-  getPostApiCommunitiesBySlugPostsResponseMock,
-  getPostApiCommunitiesResponseMock
+  getGetAuthMeResponseMock,
+  getGetCommunitiesBySlugPostsByPostIdResponseMock,
+  getGetCommunitiesBySlugPostsResponseMock,
+  getGetCommunitiesBySlugResponseMock,
+  getGetCommunitiesResponseMock,
+  getPostAuthLoginResponseMock,
+  getPostAuthRegisterResponseMock,
+  getPostCommunitiesBySlugPostsResponseMock,
+  getPostCommunitiesResponseMock
 } from './default.faker.ts';
 
-export { getPostApiAuthLoginResponseMock, getGetApiAuthMeResponseMock, getPostApiAuthRegisterResponseMock, getGetApiCommunitiesResponseMock, getPostApiCommunitiesResponseMock, getGetApiCommunitiesBySlugResponseMock, getDeleteApiCommunitiesBySlugMembersMeResponseMock, getPostApiCommunitiesBySlugMembersMeResponseMock, getGetApiCommunitiesBySlugPostsResponseMock, getPostApiCommunitiesBySlugPostsResponseMock, getGetApiCommunitiesBySlugPostsByPostIdResponseMock } from './default.faker.ts';
+export { getPostAuthLoginResponseMock, getGetAuthMeResponseMock, getPostAuthRegisterResponseMock, getGetCommunitiesResponseMock, getPostCommunitiesResponseMock, getGetCommunitiesBySlugResponseMock, getGetCommunitiesBySlugPostsResponseMock, getPostCommunitiesBySlugPostsResponseMock, getGetCommunitiesBySlugPostsByPostIdResponseMock } from './default.faker.ts';
 
 
-export const getPostApiAuthLoginMockHandler = (overrideResponse?: User | ((info: Parameters<HttpResponseResolver<PathParams, LoginUser>>[0]) => Promise<User> | User), options?: RequestHandlerOptions) => {
+export const getPostAuthLoginMockHandler = (overrideResponse?: User | ((info: Parameters<HttpResponseResolver<PathParams, LoginUser>>[0]) => Promise<User> | User), options?: RequestHandlerOptions) => {
   return http.post<PathParams, LoginUser>('*/api/auth/login', async (info: Parameters<HttpResponseResolver<PathParams, LoginUser>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPostApiAuthLoginResponseMock(),
+    : getPostAuthLoginResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getGetApiAuthMeMockHandler = (overrideResponse?: User | ((info: Parameters<HttpResponseResolver>[0]) => Promise<User> | User), options?: RequestHandlerOptions) => {
+export const getGetAuthMeMockHandler = (overrideResponse?: User | ((info: Parameters<HttpResponseResolver>[0]) => Promise<User> | User), options?: RequestHandlerOptions) => {
   return http.get('*/api/auth/me', async (info: Parameters<HttpResponseResolver>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetApiAuthMeResponseMock(),
+    : getGetAuthMeResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getPostApiAuthRegisterMockHandler = (overrideResponse?: User | ((info: Parameters<HttpResponseResolver<PathParams, RegisterUser>>[0]) => Promise<User> | User), options?: RequestHandlerOptions) => {
+export const getPostAuthRegisterMockHandler = (overrideResponse?: User | ((info: Parameters<HttpResponseResolver<PathParams, RegisterUser>>[0]) => Promise<User> | User), options?: RequestHandlerOptions) => {
   return http.post<PathParams, RegisterUser>('*/api/auth/register', async (info: Parameters<HttpResponseResolver<PathParams, RegisterUser>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPostApiAuthRegisterResponseMock(),
+    : getPostAuthRegisterResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getGetApiCommunitiesMockHandler = (overrideResponse?: ResultCommunity | ((info: Parameters<HttpResponseResolver>[0]) => Promise<ResultCommunity> | ResultCommunity), options?: RequestHandlerOptions) => {
+export const getGetCommunitiesMockHandler = (overrideResponse?: ResultCommunity | ((info: Parameters<HttpResponseResolver>[0]) => Promise<ResultCommunity> | ResultCommunity), options?: RequestHandlerOptions) => {
   return http.get('*/api/communities', async (info: Parameters<HttpResponseResolver>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetApiCommunitiesResponseMock(),
+    : getGetCommunitiesResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getPostApiCommunitiesMockHandler = (overrideResponse?: Community | ((info: Parameters<HttpResponseResolver<PathParams, Create>>[0]) => Promise<Community> | Community), options?: RequestHandlerOptions) => {
+export const getPostCommunitiesMockHandler = (overrideResponse?: Community | ((info: Parameters<HttpResponseResolver<PathParams, Create>>[0]) => Promise<Community> | Community), options?: RequestHandlerOptions) => {
   return http.post<PathParams, Create>('*/api/communities', async (info: Parameters<HttpResponseResolver<PathParams, Create>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPostApiCommunitiesResponseMock(),
+    : getPostCommunitiesResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getPutApiCommunitiesPostsByPostIdBookmarkMockHandler = (overrideResponse?: void | ((info: Parameters<HttpResponseResolver<{ postId: string }, PutPostBookmark>>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+export const getPutCommunitiesPostsByPostIdBookmarkMockHandler = (overrideResponse?: void | ((info: Parameters<HttpResponseResolver<{ postId: string }, PutPostBookmark>>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
   return http.put<{ postId: string }, PutPostBookmark>('*/api/communities/posts/:postId/bookmark', async (info: Parameters<HttpResponseResolver<{ postId: string }, PutPostBookmark>>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
@@ -116,7 +115,7 @@ export const getPutApiCommunitiesPostsByPostIdBookmarkMockHandler = (overrideRes
   }, options)
 }
 
-export const getPutApiCommunitiesPostsByPostIdVoteMockHandler = (overrideResponse?: void | ((info: Parameters<HttpResponseResolver<{ postId: string }, PutPostVote>>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+export const getPutCommunitiesPostsByPostIdVoteMockHandler = (overrideResponse?: void | ((info: Parameters<HttpResponseResolver<{ postId: string }, PutPostVote>>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
   return http.put<{ postId: string }, PutPostVote>('*/api/communities/posts/:postId/vote', async (info: Parameters<HttpResponseResolver<{ postId: string }, PutPostVote>>[0]) => {
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
@@ -126,89 +125,85 @@ export const getPutApiCommunitiesPostsByPostIdVoteMockHandler = (overrideRespons
   }, options)
 }
 
-export const getGetApiCommunitiesBySlugMockHandler = (overrideResponse?: Community | ((info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => Promise<Community> | Community), options?: RequestHandlerOptions) => {
+export const getGetCommunitiesBySlugMockHandler = (overrideResponse?: Community | ((info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => Promise<Community> | Community), options?: RequestHandlerOptions) => {
   return http.get<{ slug: string }>('*/api/communities/:slug', async (info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetApiCommunitiesBySlugResponseMock(),
+    : getGetCommunitiesBySlugResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getDeleteApiCommunitiesBySlugMembersMeMockHandler = (overrideResponse?: Join | ((info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => Promise<Join> | Join), options?: RequestHandlerOptions) => {
-  return http.delete<{ slug: string }>('*/api/communities/:slug/members/me', async (info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => {
+export const getPutCommunitiesBySlugMembersMeMockHandler = (overrideResponse?: void | ((info: Parameters<HttpResponseResolver<{ slug: string }, PutMembershipInputBody>>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+  return http.put<{ slug: string }, PutMembershipInputBody>('*/api/communities/:slug/members/me', async (info: Parameters<HttpResponseResolver<{ slug: string }, PutMembershipInputBody>>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getDeleteApiCommunitiesBySlugMembersMeResponseMock(),
-      { status: 200
+    return new HttpResponse(null,
+      { status: 204
       })
   }, options)
 }
 
-export const getPostApiCommunitiesBySlugMembersMeMockHandler = (overrideResponse?: Join | ((info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => Promise<Join> | Join), options?: RequestHandlerOptions) => {
-  return http.post<{ slug: string }>('*/api/communities/:slug/members/me', async (info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPostApiCommunitiesBySlugMembersMeResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
-export const getGetApiCommunitiesBySlugPostsMockHandler = (overrideResponse?: ResultPost | ((info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => Promise<ResultPost> | ResultPost), options?: RequestHandlerOptions) => {
+export const getGetCommunitiesBySlugPostsMockHandler = (overrideResponse?: ResultPost | ((info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => Promise<ResultPost> | ResultPost), options?: RequestHandlerOptions) => {
   return http.get<{ slug: string }>('*/api/communities/:slug/posts', async (info: Parameters<HttpResponseResolver<{ slug: string }>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetApiCommunitiesBySlugPostsResponseMock(),
+    : getGetCommunitiesBySlugPostsResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getPostApiCommunitiesBySlugPostsMockHandler = (overrideResponse?: Post | ((info: Parameters<HttpResponseResolver<{ slug: string }, CreatePost>>[0]) => Promise<Post> | Post), options?: RequestHandlerOptions) => {
+export const getPostCommunitiesBySlugPostsMockHandler = (overrideResponse?: Post | ((info: Parameters<HttpResponseResolver<{ slug: string }, CreatePost>>[0]) => Promise<Post> | Post), options?: RequestHandlerOptions) => {
   return http.post<{ slug: string }, CreatePost>('*/api/communities/:slug/posts', async (info: Parameters<HttpResponseResolver<{ slug: string }, CreatePost>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getPostApiCommunitiesBySlugPostsResponseMock(),
+    : getPostCommunitiesBySlugPostsResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getGetApiCommunitiesBySlugPostsByPostIdMockHandler = (overrideResponse?: Post | ((info: Parameters<HttpResponseResolver<{ slug: string; postId: string }>>[0]) => Promise<Post> | Post), options?: RequestHandlerOptions) => {
+export const getGetCommunitiesBySlugPostsByPostIdMockHandler = (overrideResponse?: Post | ((info: Parameters<HttpResponseResolver<{ slug: string; postId: string }>>[0]) => Promise<Post> | Post), options?: RequestHandlerOptions) => {
   return http.get<{ slug: string; postId: string }>('*/api/communities/:slug/posts/:postId', async (info: Parameters<HttpResponseResolver<{ slug: string; postId: string }>>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetApiCommunitiesBySlugPostsByPostIdResponseMock(),
+    : getGetCommunitiesBySlugPostsByPostIdResponseMock(),
       { status: 200
       })
   }, options)
 }
+
+export const getPutUserAvatarMockHandler = (overrideResponse?: void | ((info: Parameters<HttpResponseResolver<PathParams, PutUserAvatarBody>>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+  return http.put<PathParams, PutUserAvatarBody>('*/api/user/me/avatar', async (info: Parameters<HttpResponseResolver<PathParams, PutUserAvatarBody>>[0]) => {
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+
+    return new HttpResponse(null,
+      { status: 204
+      })
+  }, options)
+}
 export const getDefaultMock = () => [
-  getPostApiAuthLoginMockHandler(),
-  getGetApiAuthMeMockHandler(),
-  getPostApiAuthRegisterMockHandler(),
-  getGetApiCommunitiesMockHandler(),
-  getPostApiCommunitiesMockHandler(),
-  getPutApiCommunitiesPostsByPostIdBookmarkMockHandler(),
-  getPutApiCommunitiesPostsByPostIdVoteMockHandler(),
-  getGetApiCommunitiesBySlugMockHandler(),
-  getDeleteApiCommunitiesBySlugMembersMeMockHandler(),
-  getPostApiCommunitiesBySlugMembersMeMockHandler(),
-  getGetApiCommunitiesBySlugPostsMockHandler(),
-  getPostApiCommunitiesBySlugPostsMockHandler(),
-  getGetApiCommunitiesBySlugPostsByPostIdMockHandler()
+  getPostAuthLoginMockHandler(),
+  getGetAuthMeMockHandler(),
+  getPostAuthRegisterMockHandler(),
+  getGetCommunitiesMockHandler(),
+  getPostCommunitiesMockHandler(),
+  getPutCommunitiesPostsByPostIdBookmarkMockHandler(),
+  getPutCommunitiesPostsByPostIdVoteMockHandler(),
+  getGetCommunitiesBySlugMockHandler(),
+  getPutCommunitiesBySlugMembersMeMockHandler(),
+  getGetCommunitiesBySlugPostsMockHandler(),
+  getPostCommunitiesBySlugPostsMockHandler(),
+  getGetCommunitiesBySlugPostsByPostIdMockHandler(),
+  getPutUserAvatarMockHandler()
 ]

@@ -1,9 +1,8 @@
 import {Button, buttonVariants, Spinner} from "@heroui/react"
 import {
-    getGetApiCommunitiesBySlugQueryKey,
-    useDeleteApiCommunitiesBySlugMembersMe,
-    useGetApiCommunitiesBySlug,
-    usePostApiCommunitiesBySlugMembersMe,
+    getGetCommunitiesBySlugQueryKey,
+    useGetCommunitiesBySlug,
+    usePutCommunitiesBySlugMembersMe,
 } from "@/gen/api"
 import { CheckIcon, PlusIcon } from "@phosphor-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
@@ -16,27 +15,18 @@ type CHeaderProps = {
 export function CHeader({ slug }: CHeaderProps) {
     const queryClient = useQueryClient()
 
-    const { data, isPending, isError } = useGetApiCommunitiesBySlug(slug)
+    const { data, isPending, isError } = useGetCommunitiesBySlug(slug)
 
     const invalidateCommunity = async () => {
         await queryClient.invalidateQueries({
-            queryKey: getGetApiCommunitiesBySlugQueryKey(slug),
+            queryKey: getGetCommunitiesBySlugQueryKey(slug),
         })
     }
 
     const {
-        mutate: joinCommunity,
-        isPending: isJoining,
-    } = usePostApiCommunitiesBySlugMembersMe({
-        mutation: {
-            onSuccess: invalidateCommunity,
-        },
-    })
-
-    const {
-        mutate: leaveCommunity,
-        isPending: isLeaving,
-    } = useDeleteApiCommunitiesBySlugMembersMe({
+        mutate: putMembership,
+        isPending: isMutating,
+    } = usePutCommunitiesBySlugMembersMe({
         mutation: {
             onSuccess: invalidateCommunity,
         },
@@ -51,16 +41,14 @@ export function CHeader({ slug }: CHeaderProps) {
     }
 
     const community = data.data
-    const isMutating = isJoining || isLeaving
 
     const handleMembership = () => {
         if (isMutating) return
 
-        if (community.isMember) {
-            leaveCommunity({ slug })
-        } else {
-            joinCommunity({ slug })
-        }
+        putMembership({
+            slug,
+            data: { joined: !community.isMember },
+        })
     }
 
     return (

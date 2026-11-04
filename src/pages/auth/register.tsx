@@ -1,5 +1,5 @@
 import {Button, Card, FieldError, Form, Input, Label, TextField, toast} from "@heroui/react";
-import {usePostApiAuthRegister} from "@/gen/api";
+import {usePostAuthRegister} from "@/gen/api";
 import {toValidationErrors} from "@/lib/error.ts";
 import {useState} from "react";
 import {Link} from "@/components/link.tsx";
@@ -7,7 +7,7 @@ import {Link} from "@/components/link.tsx";
 export function Register() {
     const [errors, setErrors] = useState<Record<string, string>>({})
 
-    const register =  usePostApiAuthRegister({
+    const register =  usePostAuthRegister({
         mutation:{
             onSuccess: async() =>{
                 toast.success("注册成功!");

@@ -4,8 +4,8 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Button, Card, Input, Label, TextField } from "@heroui/react"
 import { MarkdownEditor } from "@/components/markdown-editor"
 import {
-    usePostApiCommunitiesBySlugPosts,
-    getGetApiCommunitiesBySlugPostsQueryKey,
+    usePostCommunitiesBySlugPosts,
+    getGetCommunitiesBySlugPostsQueryKey,
 } from "@/gen/api"
 
 type Props = {
@@ -20,11 +20,11 @@ export function CCreatePost({ slug }: Props) {
     const [content, setContent] = useState("")
 
     const { mutate, isPending, isError } =
-        usePostApiCommunitiesBySlugPosts({
+        usePostCommunitiesBySlugPosts({
             mutation: {
                 onSuccess: async () => {
                     await queryClient.invalidateQueries({
-                        queryKey: getGetApiCommunitiesBySlugPostsQueryKey(slug),
+                        queryKey: getGetCommunitiesBySlugPostsQueryKey(slug),
                     })
 
                     await navigate({

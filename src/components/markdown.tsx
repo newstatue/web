@@ -1,5 +1,6 @@
 import { CodeBlock } from "@heroui-pro/react/code-block"
 import {Code, type CodeProps, Table, Typography} from "@heroui/react"
+import { useTheme } from "next-themes"
 import ReactMarkdown, { type Components } from "react-markdown"
 import remarkGfm from "remark-gfm"
 import {
@@ -53,6 +54,7 @@ const components: Components = {
 
     // 围栏代码块和缩进代码块
     pre: function MarkdownPre({ children }) {
+        const { resolvedTheme } = useTheme()
         const codeElement = isValidElement<CodeProps>(children) ? children : null
         const code = String(codeElement?.props.children ?? "").replace(/\n$/, "")
         const language = /language-(\S+)/.exec(codeElement?.props.className ?? "")?.[1]
@@ -66,7 +68,11 @@ const components: Components = {
                     <span className="text-xs text-muted">{language ?? "代码"}</span>
                     <CodeBlock.CopyButton code={code} aria-label="复制代码" />
                 </CodeBlock.Header>
-                <CodeBlock.Code code={code} language={language ?? "plaintext"} />
+                <CodeBlock.Code
+                    code={code}
+                    language={language ?? "plaintext"}
+                    theme={resolvedTheme === "dark" ? "github-dark" : "github-light"}
+                />
             </CodeBlock>
         )
     },

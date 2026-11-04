@@ -28,13 +28,14 @@ import type {
   Create,
   CreatePost,
   ErrorModel,
-  GetApiCommunitiesBySlugPostsParams,
-  GetApiCommunitiesParams,
-  Join,
+  GetCommunitiesBySlugPostsParams,
+  GetCommunitiesParams,
   LoginUser,
   Post,
+  PutMembershipInputBody,
   PutPostBookmark,
   PutPostVote,
+  PutUserAvatarBody,
   RegisterUser,
   ResultCommunity,
   ResultPost,
@@ -94,24 +95,24 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type postApiAuthLoginResponse200 = {
+export type postAuthLoginResponse200 = {
   data: User
   status: 200
 }
 
-export type postApiAuthLoginResponseDefault = {
+export type postAuthLoginResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type postApiAuthLoginResponseSuccess = (postApiAuthLoginResponse200) & {
+export type postAuthLoginResponseSuccess = (postAuthLoginResponse200) & {
   headers: Headers;
 };
-export type postApiAuthLoginResponseError = (postApiAuthLoginResponseDefault) & {
+export type postAuthLoginResponseError = (postAuthLoginResponseDefault) & {
   headers: Headers;
 };
 
-export const getPostApiAuthLoginUrl = () => {
+export const getPostAuthLoginUrl = () => {
 
 
 
@@ -120,9 +121,9 @@ export const getPostApiAuthLoginUrl = () => {
 }
 
 /**
- * @summary Post API auth login
+ * @summary 用户登录
  */
-export const postApiAuthLogin = async (loginUser: NonReadonly<LoginUser>, options?: RequestInit): Promise<postApiAuthLoginResponseSuccess> => {
+export const postAuthLogin = async (loginUser: NonReadonly<LoginUser>, options?: RequestInit): Promise<postAuthLoginResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -138,7 +139,7 @@ export const postApiAuthLogin = async (loginUser: NonReadonly<LoginUser>, option
     }
     return headers;
   };
-const res = await fetch(getPostApiAuthLoginUrl(),
+const res = await fetch(getPostAuthLoginUrl(),
   {
     ...options,
     method: 'POST',
@@ -151,27 +152,27 @@ const res = await fetch(getPostApiAuthLoginUrl(),
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: postApiAuthLoginResponseError['data'], status?: number} = new globalThis.Error();
-    const data : postApiAuthLoginResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: postAuthLoginResponseError['data'], status?: number} = new globalThis.Error();
+    const data : postAuthLoginResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: postApiAuthLoginResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiAuthLoginResponseSuccess
+  const data: postAuthLoginResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthLoginResponseSuccess
 }
 
 
 
 
 
-export const getPostApiAuthLoginMutationKey = () => ['postApiAuthLogin'] as const;
+export const getPostAuthLoginMutationKey = () => ['postAuthLogin'] as const;
 
-export const getPostApiAuthLoginMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,PostApiAuthLoginMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,PostApiAuthLoginMutationVariables, TContext> => {
+export const getPostAuthLoginMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError,PostAuthLoginMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError,PostAuthLoginMutationVariables, TContext> => {
 
-const mutationKey = getPostApiAuthLoginMutationKey();
+const mutationKey = getPostAuthLoginMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -181,10 +182,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthLogin>>, PostApiAuthLoginMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAuthLogin>>, PostAuthLoginMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthLogin(data,fetchOptions)
+          return  postAuthLogin(data,fetchOptions)
         }
 
 
@@ -194,42 +195,42 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiAuthLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthLogin>>>
-    export type PostApiAuthLoginMutationBody = NonReadonly<LoginUser>
-    export type PostApiAuthLoginMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiAuthLoginMutationVariables = {data: NonReadonly<LoginUser>}
+    export type PostAuthLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthLogin>>>
+    export type PostAuthLoginMutationBody = NonReadonly<LoginUser>
+    export type PostAuthLoginMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PostAuthLoginMutationVariables = {data: NonReadonly<LoginUser>}
 
     /**
- * @summary Post API auth login
+ * @summary 用户登录
  */
-export const usePostApiAuthLogin = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,PostApiAuthLoginMutationVariables, TContext>, fetch?: RequestInit}
+export const usePostAuthLogin = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError,PostAuthLoginMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiAuthLogin>>,
+        Awaited<ReturnType<typeof postAuthLogin>>,
         TError,
-        PostApiAuthLoginMutationVariables,
+        PostAuthLoginMutationVariables,
         TContext
       > => {
-      return useMutation(getPostApiAuthLoginMutationOptions(options), queryClient);
+      return useMutation(getPostAuthLoginMutationOptions(options), queryClient);
     }
-    export type getApiAuthMeResponse200 = {
+    export type getAuthMeResponse200 = {
   data: User
   status: 200
 }
 
-export type getApiAuthMeResponseDefault = {
+export type getAuthMeResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type getApiAuthMeResponseSuccess = (getApiAuthMeResponse200) & {
+export type getAuthMeResponseSuccess = (getAuthMeResponse200) & {
   headers: Headers;
 };
-export type getApiAuthMeResponseError = (getApiAuthMeResponseDefault) & {
+export type getAuthMeResponseError = (getAuthMeResponseDefault) & {
   headers: Headers;
 };
 
-export const getGetApiAuthMeUrl = () => {
+export const getGetAuthMeUrl = () => {
 
 
 
@@ -238,11 +239,11 @@ export const getGetApiAuthMeUrl = () => {
 }
 
 /**
- * @summary Get API auth me
+ * @summary 获取当前用户
  */
-export const getApiAuthMe = async ( options?: RequestInit): Promise<getApiAuthMeResponseSuccess> => {
+export const getAuthMe = async ( options?: RequestInit): Promise<getAuthMeResponseSuccess> => {
 
-  const res = await fetch(getGetApiAuthMeUrl(),
+  const res = await fetch(getGetAuthMeUrl(),
   {
     ...options,
     method: 'GET'
@@ -255,83 +256,83 @@ export const getApiAuthMe = async ( options?: RequestInit): Promise<getApiAuthMe
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: getApiAuthMeResponseError['data'], status?: number} = new globalThis.Error();
-    const data : getApiAuthMeResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: getAuthMeResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getAuthMeResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: getApiAuthMeResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiAuthMeResponseSuccess
+  const data: getAuthMeResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getAuthMeResponseSuccess
 }
 
 
 
 
 
-export const getGetApiAuthMeQueryKey = () => {
+export const getGetAuthMeQueryKey = () => {
     return [
     `/api/auth/me`
     ] as const;
     }
 
 
-export const getGetApiAuthMeQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, fetch?: RequestInit}
+export const getGetAuthMeQueryOptions = <TData = Awaited<ReturnType<typeof getAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthMe>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiAuthMeQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetAuthMeQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthMe>>> = ({ signal }) => getApiAuthMe({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthMe>>> = ({ signal }) => getAuthMe({ signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAuthMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiAuthMeQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAuthMe>>>
-export type GetApiAuthMeQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+export type GetAuthMeQueryResult = NonNullable<Awaited<ReturnType<typeof getAuthMe>>>
+export type GetAuthMeQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
 
 
-export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>> & Pick<
+export function useGetAuthMe<TData = Awaited<ReturnType<typeof getAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthMe>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiAuthMe>>,
+          Awaited<ReturnType<typeof getAuthMe>>,
           TError,
-          Awaited<ReturnType<typeof getApiAuthMe>>
+          Awaited<ReturnType<typeof getAuthMe>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>> & Pick<
+export function useGetAuthMe<TData = Awaited<ReturnType<typeof getAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthMe>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiAuthMe>>,
+          Awaited<ReturnType<typeof getAuthMe>>,
           TError,
-          Awaited<ReturnType<typeof getApiAuthMe>>
+          Awaited<ReturnType<typeof getAuthMe>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, fetch?: RequestInit}
+export function useGetAuthMe<TData = Awaited<ReturnType<typeof getAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthMe>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get API auth me
+ * @summary 获取当前用户
  */
 
-export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, fetch?: RequestInit}
+export function useGetAuthMe<TData = Awaited<ReturnType<typeof getAuthMe>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthMe>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiAuthMeQueryOptions(options)
+  const queryOptions = getGetAuthMeQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -343,24 +344,24 @@ export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>
 
 
 
-export type postApiAuthRegisterResponse200 = {
+export type postAuthRegisterResponse200 = {
   data: User
   status: 200
 }
 
-export type postApiAuthRegisterResponseDefault = {
+export type postAuthRegisterResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type postApiAuthRegisterResponseSuccess = (postApiAuthRegisterResponse200) & {
+export type postAuthRegisterResponseSuccess = (postAuthRegisterResponse200) & {
   headers: Headers;
 };
-export type postApiAuthRegisterResponseError = (postApiAuthRegisterResponseDefault) & {
+export type postAuthRegisterResponseError = (postAuthRegisterResponseDefault) & {
   headers: Headers;
 };
 
-export const getPostApiAuthRegisterUrl = () => {
+export const getPostAuthRegisterUrl = () => {
 
 
 
@@ -369,9 +370,9 @@ export const getPostApiAuthRegisterUrl = () => {
 }
 
 /**
- * @summary Post API auth register
+ * @summary 注册用户
  */
-export const postApiAuthRegister = async (registerUser: NonReadonly<RegisterUser>, options?: RequestInit): Promise<postApiAuthRegisterResponseSuccess> => {
+export const postAuthRegister = async (registerUser: NonReadonly<RegisterUser>, options?: RequestInit): Promise<postAuthRegisterResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -387,7 +388,7 @@ export const postApiAuthRegister = async (registerUser: NonReadonly<RegisterUser
     }
     return headers;
   };
-const res = await fetch(getPostApiAuthRegisterUrl(),
+const res = await fetch(getPostAuthRegisterUrl(),
   {
     ...options,
     method: 'POST',
@@ -400,27 +401,27 @@ const res = await fetch(getPostApiAuthRegisterUrl(),
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: postApiAuthRegisterResponseError['data'], status?: number} = new globalThis.Error();
-    const data : postApiAuthRegisterResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: postAuthRegisterResponseError['data'], status?: number} = new globalThis.Error();
+    const data : postAuthRegisterResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: postApiAuthRegisterResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiAuthRegisterResponseSuccess
+  const data: postAuthRegisterResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthRegisterResponseSuccess
 }
 
 
 
 
 
-export const getPostApiAuthRegisterMutationKey = () => ['postApiAuthRegister'] as const;
+export const getPostAuthRegisterMutationKey = () => ['postAuthRegister'] as const;
 
-export const getPostApiAuthRegisterMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,PostApiAuthRegisterMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,PostApiAuthRegisterMutationVariables, TContext> => {
+export const getPostAuthRegisterMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError,PostAuthRegisterMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError,PostAuthRegisterMutationVariables, TContext> => {
 
-const mutationKey = getPostApiAuthRegisterMutationKey();
+const mutationKey = getPostAuthRegisterMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -430,10 +431,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthRegister>>, PostApiAuthRegisterMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAuthRegister>>, PostAuthRegisterMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthRegister(data,fetchOptions)
+          return  postAuthRegister(data,fetchOptions)
         }
 
 
@@ -443,42 +444,42 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiAuthRegisterMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthRegister>>>
-    export type PostApiAuthRegisterMutationBody = NonReadonly<RegisterUser>
-    export type PostApiAuthRegisterMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiAuthRegisterMutationVariables = {data: NonReadonly<RegisterUser>}
+    export type PostAuthRegisterMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthRegister>>>
+    export type PostAuthRegisterMutationBody = NonReadonly<RegisterUser>
+    export type PostAuthRegisterMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PostAuthRegisterMutationVariables = {data: NonReadonly<RegisterUser>}
 
     /**
- * @summary Post API auth register
+ * @summary 注册用户
  */
-export const usePostApiAuthRegister = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,PostApiAuthRegisterMutationVariables, TContext>, fetch?: RequestInit}
+export const usePostAuthRegister = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError,PostAuthRegisterMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiAuthRegister>>,
+        Awaited<ReturnType<typeof postAuthRegister>>,
         TError,
-        PostApiAuthRegisterMutationVariables,
+        PostAuthRegisterMutationVariables,
         TContext
       > => {
-      return useMutation(getPostApiAuthRegisterMutationOptions(options), queryClient);
+      return useMutation(getPostAuthRegisterMutationOptions(options), queryClient);
     }
-    export type getApiCommunitiesResponse200 = {
+    export type getCommunitiesResponse200 = {
   data: ResultCommunity
   status: 200
 }
 
-export type getApiCommunitiesResponseDefault = {
+export type getCommunitiesResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type getApiCommunitiesResponseSuccess = (getApiCommunitiesResponse200) & {
+export type getCommunitiesResponseSuccess = (getCommunitiesResponse200) & {
   headers: Headers;
 };
-export type getApiCommunitiesResponseError = (getApiCommunitiesResponseDefault) & {
+export type getCommunitiesResponseError = (getCommunitiesResponseDefault) & {
   headers: Headers;
 };
 
-export const getGetApiCommunitiesUrl = (params?: GetApiCommunitiesParams,) => {
+export const getGetCommunitiesUrl = (params?: GetCommunitiesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -494,11 +495,11 @@ export const getGetApiCommunitiesUrl = (params?: GetApiCommunitiesParams,) => {
 }
 
 /**
- * @summary Get API communities
+ * @summary 获取社区列表
  */
-export const getApiCommunities = async (params?: GetApiCommunitiesParams, options?: RequestInit): Promise<getApiCommunitiesResponseSuccess> => {
+export const getCommunities = async (params?: GetCommunitiesParams, options?: RequestInit): Promise<getCommunitiesResponseSuccess> => {
 
-  const res = await fetch(getGetApiCommunitiesUrl(params),
+  const res = await fetch(getGetCommunitiesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -511,83 +512,83 @@ export const getApiCommunities = async (params?: GetApiCommunitiesParams, option
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: getApiCommunitiesResponseError['data'], status?: number} = new globalThis.Error();
-    const data : getApiCommunitiesResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: getCommunitiesResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getCommunitiesResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: getApiCommunitiesResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiCommunitiesResponseSuccess
+  const data: getCommunitiesResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCommunitiesResponseSuccess
 }
 
 
 
 
 
-export const getGetApiCommunitiesQueryKey = (params?: GetApiCommunitiesParams,) => {
+export const getGetCommunitiesQueryKey = (params?: GetCommunitiesParams,) => {
     return [
     `/api/communities`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiCommunitiesQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(params?: GetApiCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunities>>, TError, TData>>, fetch?: RequestInit}
+export const getGetCommunitiesQueryOptions = <TData = Awaited<ReturnType<typeof getCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(params?: GetCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunities>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitiesQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getGetCommunitiesQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunities>>> = ({ signal }) => getApiCommunities(params, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommunities>>> = ({ signal }) => getCommunities(params, { signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunities>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCommunities>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiCommunitiesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunities>>>
-export type GetApiCommunitiesQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+export type GetCommunitiesQueryResult = NonNullable<Awaited<ReturnType<typeof getCommunities>>>
+export type GetCommunitiesQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
 
 
-export function useGetApiCommunities<TData = Awaited<ReturnType<typeof getApiCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- params: undefined |  GetApiCommunitiesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunities>>, TError, TData>> & Pick<
+export function useGetCommunities<TData = Awaited<ReturnType<typeof getCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ params: undefined |  GetCommunitiesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunities>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunities>>,
+          Awaited<ReturnType<typeof getCommunities>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunities>>
+          Awaited<ReturnType<typeof getCommunities>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunities<TData = Awaited<ReturnType<typeof getApiCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- params?: GetApiCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunities>>, TError, TData>> & Pick<
+export function useGetCommunities<TData = Awaited<ReturnType<typeof getCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ params?: GetCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunities>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunities>>,
+          Awaited<ReturnType<typeof getCommunities>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunities>>
+          Awaited<ReturnType<typeof getCommunities>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunities<TData = Awaited<ReturnType<typeof getApiCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- params?: GetApiCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunities>>, TError, TData>>, fetch?: RequestInit}
+export function useGetCommunities<TData = Awaited<ReturnType<typeof getCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ params?: GetCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunities>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get API communities
+ * @summary 获取社区列表
  */
 
-export function useGetApiCommunities<TData = Awaited<ReturnType<typeof getApiCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- params?: GetApiCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunities>>, TError, TData>>, fetch?: RequestInit}
+export function useGetCommunities<TData = Awaited<ReturnType<typeof getCommunities>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ params?: GetCommunitiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunities>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCommunitiesQueryOptions(params,options)
+  const queryOptions = getGetCommunitiesQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -599,24 +600,24 @@ export function useGetApiCommunities<TData = Awaited<ReturnType<typeof getApiCom
 
 
 
-export type postApiCommunitiesResponse200 = {
+export type postCommunitiesResponse200 = {
   data: Community
   status: 200
 }
 
-export type postApiCommunitiesResponseDefault = {
+export type postCommunitiesResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type postApiCommunitiesResponseSuccess = (postApiCommunitiesResponse200) & {
+export type postCommunitiesResponseSuccess = (postCommunitiesResponse200) & {
   headers: Headers;
 };
-export type postApiCommunitiesResponseError = (postApiCommunitiesResponseDefault) & {
+export type postCommunitiesResponseError = (postCommunitiesResponseDefault) & {
   headers: Headers;
 };
 
-export const getPostApiCommunitiesUrl = () => {
+export const getPostCommunitiesUrl = () => {
 
 
 
@@ -625,9 +626,9 @@ export const getPostApiCommunitiesUrl = () => {
 }
 
 /**
- * @summary Post API communities
+ * @summary 创建社区
  */
-export const postApiCommunities = async (create: NonReadonly<Create>, options?: RequestInit): Promise<postApiCommunitiesResponseSuccess> => {
+export const postCommunities = async (create: NonReadonly<Create>, options?: RequestInit): Promise<postCommunitiesResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -643,7 +644,7 @@ export const postApiCommunities = async (create: NonReadonly<Create>, options?: 
     }
     return headers;
   };
-const res = await fetch(getPostApiCommunitiesUrl(),
+const res = await fetch(getPostCommunitiesUrl(),
   {
     ...options,
     method: 'POST',
@@ -656,27 +657,27 @@ const res = await fetch(getPostApiCommunitiesUrl(),
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: postApiCommunitiesResponseError['data'], status?: number} = new globalThis.Error();
-    const data : postApiCommunitiesResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: postCommunitiesResponseError['data'], status?: number} = new globalThis.Error();
+    const data : postCommunitiesResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: postApiCommunitiesResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiCommunitiesResponseSuccess
+  const data: postCommunitiesResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCommunitiesResponseSuccess
 }
 
 
 
 
 
-export const getPostApiCommunitiesMutationKey = () => ['postApiCommunities'] as const;
+export const getPostCommunitiesMutationKey = () => ['postCommunities'] as const;
 
-export const getPostApiCommunitiesMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommunities>>, TError,PostApiCommunitiesMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiCommunities>>, TError,PostApiCommunitiesMutationVariables, TContext> => {
+export const getPostCommunitiesMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postCommunities>>, TError,PostCommunitiesMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof postCommunities>>, TError,PostCommunitiesMutationVariables, TContext> => {
 
-const mutationKey = getPostApiCommunitiesMutationKey();
+const mutationKey = getPostCommunitiesMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -686,10 +687,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCommunities>>, PostApiCommunitiesMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postCommunities>>, PostCommunitiesMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiCommunities(data,fetchOptions)
+          return  postCommunities(data,fetchOptions)
         }
 
 
@@ -699,42 +700,42 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiCommunitiesMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommunities>>>
-    export type PostApiCommunitiesMutationBody = NonReadonly<Create>
-    export type PostApiCommunitiesMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiCommunitiesMutationVariables = {data: NonReadonly<Create>}
+    export type PostCommunitiesMutationResult = NonNullable<Awaited<ReturnType<typeof postCommunities>>>
+    export type PostCommunitiesMutationBody = NonReadonly<Create>
+    export type PostCommunitiesMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PostCommunitiesMutationVariables = {data: NonReadonly<Create>}
 
     /**
- * @summary Post API communities
+ * @summary 创建社区
  */
-export const usePostApiCommunities = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommunities>>, TError,PostApiCommunitiesMutationVariables, TContext>, fetch?: RequestInit}
+export const usePostCommunities = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postCommunities>>, TError,PostCommunitiesMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiCommunities>>,
+        Awaited<ReturnType<typeof postCommunities>>,
         TError,
-        PostApiCommunitiesMutationVariables,
+        PostCommunitiesMutationVariables,
         TContext
       > => {
-      return useMutation(getPostApiCommunitiesMutationOptions(options), queryClient);
+      return useMutation(getPostCommunitiesMutationOptions(options), queryClient);
     }
-    export type putApiCommunitiesPostsByPostIdBookmarkResponse204 = {
+    export type putCommunitiesPostsByPostIdBookmarkResponse204 = {
   data: void
   status: 204
 }
 
-export type putApiCommunitiesPostsByPostIdBookmarkResponseDefault = {
+export type putCommunitiesPostsByPostIdBookmarkResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 204>
 }
 
-export type putApiCommunitiesPostsByPostIdBookmarkResponseSuccess = (putApiCommunitiesPostsByPostIdBookmarkResponse204) & {
+export type putCommunitiesPostsByPostIdBookmarkResponseSuccess = (putCommunitiesPostsByPostIdBookmarkResponse204) & {
   headers: Headers;
 };
-export type putApiCommunitiesPostsByPostIdBookmarkResponseError = (putApiCommunitiesPostsByPostIdBookmarkResponseDefault) & {
+export type putCommunitiesPostsByPostIdBookmarkResponseError = (putCommunitiesPostsByPostIdBookmarkResponseDefault) & {
   headers: Headers;
 };
 
-export const getPutApiCommunitiesPostsByPostIdBookmarkUrl = (postId: string,) => {
+export const getPutCommunitiesPostsByPostIdBookmarkUrl = (postId: string,) => {
 
 
 
@@ -743,10 +744,10 @@ export const getPutApiCommunitiesPostsByPostIdBookmarkUrl = (postId: string,) =>
 }
 
 /**
- * @summary Put API communities posts by post ID bookmark
+ * @summary 设置帖子收藏
  */
-export const putApiCommunitiesPostsByPostIdBookmark = async (postId: string,
-    putPostBookmark: NonReadonly<PutPostBookmark>, options?: RequestInit): Promise<putApiCommunitiesPostsByPostIdBookmarkResponseSuccess> => {
+export const putCommunitiesPostsByPostIdBookmark = async (postId: string,
+    putPostBookmark: NonReadonly<PutPostBookmark>, options?: RequestInit): Promise<putCommunitiesPostsByPostIdBookmarkResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -762,7 +763,7 @@ export const putApiCommunitiesPostsByPostIdBookmark = async (postId: string,
     }
     return headers;
   };
-const res = await fetch(getPutApiCommunitiesPostsByPostIdBookmarkUrl(postId),
+const res = await fetch(getPutCommunitiesPostsByPostIdBookmarkUrl(postId),
   {
     ...options,
     method: 'PUT',
@@ -775,27 +776,27 @@ const res = await fetch(getPutApiCommunitiesPostsByPostIdBookmarkUrl(postId),
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: putApiCommunitiesPostsByPostIdBookmarkResponseError['data'], status?: number} = new globalThis.Error();
-    const data : putApiCommunitiesPostsByPostIdBookmarkResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: putCommunitiesPostsByPostIdBookmarkResponseError['data'], status?: number} = new globalThis.Error();
+    const data : putCommunitiesPostsByPostIdBookmarkResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: putApiCommunitiesPostsByPostIdBookmarkResponseSuccess['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as putApiCommunitiesPostsByPostIdBookmarkResponseSuccess
+  const data: putCommunitiesPostsByPostIdBookmarkResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putCommunitiesPostsByPostIdBookmarkResponseSuccess
 }
 
 
 
 
 
-export const getPutApiCommunitiesPostsByPostIdBookmarkMutationKey = () => ['putApiCommunitiesPostsByPostIdBookmark'] as const;
+export const getPutCommunitiesPostsByPostIdBookmarkMutationKey = () => ['putCommunitiesPostsByPostIdBookmark'] as const;
 
-export const getPutApiCommunitiesPostsByPostIdBookmarkMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, TError,PutApiCommunitiesPostsByPostIdBookmarkMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, TError,PutApiCommunitiesPostsByPostIdBookmarkMutationVariables, TContext> => {
+export const getPutCommunitiesPostsByPostIdBookmarkMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdBookmark>>, TError,PutCommunitiesPostsByPostIdBookmarkMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdBookmark>>, TError,PutCommunitiesPostsByPostIdBookmarkMutationVariables, TContext> => {
 
-const mutationKey = getPutApiCommunitiesPostsByPostIdBookmarkMutationKey();
+const mutationKey = getPutCommunitiesPostsByPostIdBookmarkMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -805,10 +806,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, PutApiCommunitiesPostsByPostIdBookmarkMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdBookmark>>, PutCommunitiesPostsByPostIdBookmarkMutationVariables> = (props) => {
           const {postId,data} = props ?? {};
 
-          return  putApiCommunitiesPostsByPostIdBookmark(postId,data,fetchOptions)
+          return  putCommunitiesPostsByPostIdBookmark(postId,data,fetchOptions)
         }
 
 
@@ -818,42 +819,42 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PutApiCommunitiesPostsByPostIdBookmarkMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>>
-    export type PutApiCommunitiesPostsByPostIdBookmarkMutationBody = NonReadonly<PutPostBookmark>
-    export type PutApiCommunitiesPostsByPostIdBookmarkMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PutApiCommunitiesPostsByPostIdBookmarkMutationVariables = {postId: string;data: NonReadonly<PutPostBookmark>}
+    export type PutCommunitiesPostsByPostIdBookmarkMutationResult = NonNullable<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdBookmark>>>
+    export type PutCommunitiesPostsByPostIdBookmarkMutationBody = NonReadonly<PutPostBookmark>
+    export type PutCommunitiesPostsByPostIdBookmarkMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PutCommunitiesPostsByPostIdBookmarkMutationVariables = {postId: string;data: NonReadonly<PutPostBookmark>}
 
     /**
- * @summary Put API communities posts by post ID bookmark
+ * @summary 设置帖子收藏
  */
-export const usePutApiCommunitiesPostsByPostIdBookmark = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>, TError,PutApiCommunitiesPostsByPostIdBookmarkMutationVariables, TContext>, fetch?: RequestInit}
+export const usePutCommunitiesPostsByPostIdBookmark = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdBookmark>>, TError,PutCommunitiesPostsByPostIdBookmarkMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdBookmark>>,
+        Awaited<ReturnType<typeof putCommunitiesPostsByPostIdBookmark>>,
         TError,
-        PutApiCommunitiesPostsByPostIdBookmarkMutationVariables,
+        PutCommunitiesPostsByPostIdBookmarkMutationVariables,
         TContext
       > => {
-      return useMutation(getPutApiCommunitiesPostsByPostIdBookmarkMutationOptions(options), queryClient);
+      return useMutation(getPutCommunitiesPostsByPostIdBookmarkMutationOptions(options), queryClient);
     }
-    export type putApiCommunitiesPostsByPostIdVoteResponse204 = {
+    export type putCommunitiesPostsByPostIdVoteResponse204 = {
   data: void
   status: 204
 }
 
-export type putApiCommunitiesPostsByPostIdVoteResponseDefault = {
+export type putCommunitiesPostsByPostIdVoteResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 204>
 }
 
-export type putApiCommunitiesPostsByPostIdVoteResponseSuccess = (putApiCommunitiesPostsByPostIdVoteResponse204) & {
+export type putCommunitiesPostsByPostIdVoteResponseSuccess = (putCommunitiesPostsByPostIdVoteResponse204) & {
   headers: Headers;
 };
-export type putApiCommunitiesPostsByPostIdVoteResponseError = (putApiCommunitiesPostsByPostIdVoteResponseDefault) & {
+export type putCommunitiesPostsByPostIdVoteResponseError = (putCommunitiesPostsByPostIdVoteResponseDefault) & {
   headers: Headers;
 };
 
-export const getPutApiCommunitiesPostsByPostIdVoteUrl = (postId: string,) => {
+export const getPutCommunitiesPostsByPostIdVoteUrl = (postId: string,) => {
 
 
 
@@ -862,10 +863,10 @@ export const getPutApiCommunitiesPostsByPostIdVoteUrl = (postId: string,) => {
 }
 
 /**
- * @summary Put API communities posts by post ID vote
+ * @summary 设置帖子投票
  */
-export const putApiCommunitiesPostsByPostIdVote = async (postId: string,
-    putPostVote: NonReadonly<PutPostVote>, options?: RequestInit): Promise<putApiCommunitiesPostsByPostIdVoteResponseSuccess> => {
+export const putCommunitiesPostsByPostIdVote = async (postId: string,
+    putPostVote: NonReadonly<PutPostVote>, options?: RequestInit): Promise<putCommunitiesPostsByPostIdVoteResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -881,7 +882,7 @@ export const putApiCommunitiesPostsByPostIdVote = async (postId: string,
     }
     return headers;
   };
-const res = await fetch(getPutApiCommunitiesPostsByPostIdVoteUrl(postId),
+const res = await fetch(getPutCommunitiesPostsByPostIdVoteUrl(postId),
   {
     ...options,
     method: 'PUT',
@@ -894,27 +895,27 @@ const res = await fetch(getPutApiCommunitiesPostsByPostIdVoteUrl(postId),
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: putApiCommunitiesPostsByPostIdVoteResponseError['data'], status?: number} = new globalThis.Error();
-    const data : putApiCommunitiesPostsByPostIdVoteResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: putCommunitiesPostsByPostIdVoteResponseError['data'], status?: number} = new globalThis.Error();
+    const data : putCommunitiesPostsByPostIdVoteResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: putApiCommunitiesPostsByPostIdVoteResponseSuccess['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as putApiCommunitiesPostsByPostIdVoteResponseSuccess
+  const data: putCommunitiesPostsByPostIdVoteResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putCommunitiesPostsByPostIdVoteResponseSuccess
 }
 
 
 
 
 
-export const getPutApiCommunitiesPostsByPostIdVoteMutationKey = () => ['putApiCommunitiesPostsByPostIdVote'] as const;
+export const getPutCommunitiesPostsByPostIdVoteMutationKey = () => ['putCommunitiesPostsByPostIdVote'] as const;
 
-export const getPutApiCommunitiesPostsByPostIdVoteMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, TError,PutApiCommunitiesPostsByPostIdVoteMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, TError,PutApiCommunitiesPostsByPostIdVoteMutationVariables, TContext> => {
+export const getPutCommunitiesPostsByPostIdVoteMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdVote>>, TError,PutCommunitiesPostsByPostIdVoteMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdVote>>, TError,PutCommunitiesPostsByPostIdVoteMutationVariables, TContext> => {
 
-const mutationKey = getPutApiCommunitiesPostsByPostIdVoteMutationKey();
+const mutationKey = getPutCommunitiesPostsByPostIdVoteMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -924,10 +925,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, PutApiCommunitiesPostsByPostIdVoteMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdVote>>, PutCommunitiesPostsByPostIdVoteMutationVariables> = (props) => {
           const {postId,data} = props ?? {};
 
-          return  putApiCommunitiesPostsByPostIdVote(postId,data,fetchOptions)
+          return  putCommunitiesPostsByPostIdVote(postId,data,fetchOptions)
         }
 
 
@@ -937,42 +938,42 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PutApiCommunitiesPostsByPostIdVoteMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>>
-    export type PutApiCommunitiesPostsByPostIdVoteMutationBody = NonReadonly<PutPostVote>
-    export type PutApiCommunitiesPostsByPostIdVoteMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PutApiCommunitiesPostsByPostIdVoteMutationVariables = {postId: string;data: NonReadonly<PutPostVote>}
+    export type PutCommunitiesPostsByPostIdVoteMutationResult = NonNullable<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdVote>>>
+    export type PutCommunitiesPostsByPostIdVoteMutationBody = NonReadonly<PutPostVote>
+    export type PutCommunitiesPostsByPostIdVoteMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PutCommunitiesPostsByPostIdVoteMutationVariables = {postId: string;data: NonReadonly<PutPostVote>}
 
     /**
- * @summary Put API communities posts by post ID vote
+ * @summary 设置帖子投票
  */
-export const usePutApiCommunitiesPostsByPostIdVote = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>, TError,PutApiCommunitiesPostsByPostIdVoteMutationVariables, TContext>, fetch?: RequestInit}
+export const usePutCommunitiesPostsByPostIdVote = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesPostsByPostIdVote>>, TError,PutCommunitiesPostsByPostIdVoteMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putApiCommunitiesPostsByPostIdVote>>,
+        Awaited<ReturnType<typeof putCommunitiesPostsByPostIdVote>>,
         TError,
-        PutApiCommunitiesPostsByPostIdVoteMutationVariables,
+        PutCommunitiesPostsByPostIdVoteMutationVariables,
         TContext
       > => {
-      return useMutation(getPutApiCommunitiesPostsByPostIdVoteMutationOptions(options), queryClient);
+      return useMutation(getPutCommunitiesPostsByPostIdVoteMutationOptions(options), queryClient);
     }
-    export type getApiCommunitiesBySlugResponse200 = {
+    export type getCommunitiesBySlugResponse200 = {
   data: Community
   status: 200
 }
 
-export type getApiCommunitiesBySlugResponseDefault = {
+export type getCommunitiesBySlugResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type getApiCommunitiesBySlugResponseSuccess = (getApiCommunitiesBySlugResponse200) & {
+export type getCommunitiesBySlugResponseSuccess = (getCommunitiesBySlugResponse200) & {
   headers: Headers;
 };
-export type getApiCommunitiesBySlugResponseError = (getApiCommunitiesBySlugResponseDefault) & {
+export type getCommunitiesBySlugResponseError = (getCommunitiesBySlugResponseDefault) & {
   headers: Headers;
 };
 
-export const getGetApiCommunitiesBySlugUrl = (slug: string,) => {
+export const getGetCommunitiesBySlugUrl = (slug: string,) => {
 
 
 
@@ -981,11 +982,11 @@ export const getGetApiCommunitiesBySlugUrl = (slug: string,) => {
 }
 
 /**
- * @summary Get API communities by slug
+ * @summary 获取社区详情
  */
-export const getApiCommunitiesBySlug = async (slug: string, options?: RequestInit): Promise<getApiCommunitiesBySlugResponseSuccess> => {
+export const getCommunitiesBySlug = async (slug: string, options?: RequestInit): Promise<getCommunitiesBySlugResponseSuccess> => {
 
-  const res = await fetch(getGetApiCommunitiesBySlugUrl(slug),
+  const res = await fetch(getGetCommunitiesBySlugUrl(slug),
   {
     ...options,
     method: 'GET'
@@ -998,83 +999,83 @@ export const getApiCommunitiesBySlug = async (slug: string, options?: RequestIni
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: getApiCommunitiesBySlugResponseError['data'], status?: number} = new globalThis.Error();
-    const data : getApiCommunitiesBySlugResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: getCommunitiesBySlugResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getCommunitiesBySlugResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: getApiCommunitiesBySlugResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiCommunitiesBySlugResponseSuccess
+  const data: getCommunitiesBySlugResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCommunitiesBySlugResponseSuccess
 }
 
 
 
 
 
-export const getGetApiCommunitiesBySlugQueryKey = (slug: string,) => {
+export const getGetCommunitiesBySlugQueryKey = (slug: string,) => {
     return [
     `/api/communities/${slug}`
     ] as const;
     }
 
 
-export const getGetApiCommunitiesBySlugQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError, TData>>, fetch?: RequestInit}
+export const getGetCommunitiesBySlugQueryOptions = <TData = Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitiesBySlugQueryKey(slug);
+  const queryKey =  queryOptions?.queryKey ?? getGetCommunitiesBySlugQueryKey(slug);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>> = ({ signal }) => getApiCommunitiesBySlug(slug, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommunitiesBySlug>>> = ({ signal }) => getCommunitiesBySlug(slug, { signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiCommunitiesBySlugQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>>
-export type GetApiCommunitiesBySlugQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+export type GetCommunitiesBySlugQueryResult = NonNullable<Awaited<ReturnType<typeof getCommunitiesBySlug>>>
+export type GetCommunitiesBySlugQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
 
 
-export function useGetApiCommunitiesBySlug<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError, TData>> & Pick<
+export function useGetCommunitiesBySlug<TData = Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitiesBySlug>>,
+          Awaited<ReturnType<typeof getCommunitiesBySlug>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunitiesBySlug>>
+          Awaited<ReturnType<typeof getCommunitiesBySlug>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitiesBySlug<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError, TData>> & Pick<
+export function useGetCommunitiesBySlug<TData = Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitiesBySlug>>,
+          Awaited<ReturnType<typeof getCommunitiesBySlug>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunitiesBySlug>>
+          Awaited<ReturnType<typeof getCommunitiesBySlug>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitiesBySlug<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError, TData>>, fetch?: RequestInit}
+export function useGetCommunitiesBySlug<TData = Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get API communities by slug
+ * @summary 获取社区详情
  */
 
-export function useGetApiCommunitiesBySlug<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
- slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlug>>, TError, TData>>, fetch?: RequestInit}
+export function useGetCommunitiesBySlug<TData = Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+ slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlug>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCommunitiesBySlugQueryOptions(slug,options)
+  const queryOptions = getGetCommunitiesBySlugQueryOptions(slug,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -1086,24 +1087,24 @@ export function useGetApiCommunitiesBySlug<TData = Awaited<ReturnType<typeof get
 
 
 
-export type deleteApiCommunitiesBySlugMembersMeResponse200 = {
-  data: Join
-  status: 200
+export type putCommunitiesBySlugMembersMeResponse204 = {
+  data: void
+  status: 204
 }
 
-export type deleteApiCommunitiesBySlugMembersMeResponseDefault = {
+export type putCommunitiesBySlugMembersMeResponseDefault = {
   data: ErrorModel
-  status: Exclude<HTTPStatusCodes, 200>
+  status: Exclude<HTTPStatusCodes, 204>
 }
 
-export type deleteApiCommunitiesBySlugMembersMeResponseSuccess = (deleteApiCommunitiesBySlugMembersMeResponse200) & {
+export type putCommunitiesBySlugMembersMeResponseSuccess = (putCommunitiesBySlugMembersMeResponse204) & {
   headers: Headers;
 };
-export type deleteApiCommunitiesBySlugMembersMeResponseError = (deleteApiCommunitiesBySlugMembersMeResponseDefault) & {
+export type putCommunitiesBySlugMembersMeResponseError = (putCommunitiesBySlugMembersMeResponseDefault) & {
   headers: Headers;
 };
 
-export const getDeleteApiCommunitiesBySlugMembersMeUrl = (slug: string,) => {
+export const getPutCommunitiesBySlugMembersMeUrl = (slug: string,) => {
 
 
 
@@ -1112,16 +1113,31 @@ export const getDeleteApiCommunitiesBySlugMembersMeUrl = (slug: string,) => {
 }
 
 /**
- * @summary Delete API communities by slug members me
+ * @summary 设置当前用户的社区加入状态
  */
-export const deleteApiCommunitiesBySlugMembersMe = async (slug: string, options?: RequestInit): Promise<deleteApiCommunitiesBySlugMembersMeResponseSuccess> => {
+export const putCommunitiesBySlugMembersMe = async (slug: string,
+    putMembershipInputBody: NonReadonly<PutMembershipInputBody>, options?: RequestInit): Promise<putCommunitiesBySlugMembersMeResponseSuccess> => {
 
-  const res = await fetch(getDeleteApiCommunitiesBySlugMembersMeUrl(slug),
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPutCommunitiesBySlugMembersMeUrl(slug),
   {
     ...options,
-    method: 'DELETE'
-
-
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(putMembershipInputBody)
   }
 )
 
@@ -1129,27 +1145,27 @@ export const deleteApiCommunitiesBySlugMembersMe = async (slug: string, options?
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: deleteApiCommunitiesBySlugMembersMeResponseError['data'], status?: number} = new globalThis.Error();
-    const data : deleteApiCommunitiesBySlugMembersMeResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: putCommunitiesBySlugMembersMeResponseError['data'], status?: number} = new globalThis.Error();
+    const data : putCommunitiesBySlugMembersMeResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: deleteApiCommunitiesBySlugMembersMeResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteApiCommunitiesBySlugMembersMeResponseSuccess
+  const data: putCommunitiesBySlugMembersMeResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putCommunitiesBySlugMembersMeResponseSuccess
 }
 
 
 
 
 
-export const getDeleteApiCommunitiesBySlugMembersMeMutationKey = () => ['deleteApiCommunitiesBySlugMembersMe'] as const;
+export const getPutCommunitiesBySlugMembersMeMutationKey = () => ['putCommunitiesBySlugMembersMe'] as const;
 
-export const getDeleteApiCommunitiesBySlugMembersMeMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommunitiesBySlugMembersMe>>, TError,DeleteApiCommunitiesBySlugMembersMeMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommunitiesBySlugMembersMe>>, TError,DeleteApiCommunitiesBySlugMembersMeMutationVariables, TContext> => {
+export const getPutCommunitiesBySlugMembersMeMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesBySlugMembersMe>>, TError,PutCommunitiesBySlugMembersMeMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesBySlugMembersMe>>, TError,PutCommunitiesBySlugMembersMeMutationVariables, TContext> => {
 
-const mutationKey = getDeleteApiCommunitiesBySlugMembersMeMutationKey();
+const mutationKey = getPutCommunitiesBySlugMembersMeMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -1159,10 +1175,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiCommunitiesBySlugMembersMe>>, DeleteApiCommunitiesBySlugMembersMeMutationVariables> = (props) => {
-          const {slug} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putCommunitiesBySlugMembersMe>>, PutCommunitiesBySlugMembersMeMutationVariables> = (props) => {
+          const {slug,data} = props ?? {};
 
-          return  deleteApiCommunitiesBySlugMembersMe(slug,fetchOptions)
+          return  putCommunitiesBySlugMembersMe(slug,data,fetchOptions)
         }
 
 
@@ -1172,147 +1188,43 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type DeleteApiCommunitiesBySlugMembersMeMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiCommunitiesBySlugMembersMe>>>
-
-    export type DeleteApiCommunitiesBySlugMembersMeMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type DeleteApiCommunitiesBySlugMembersMeMutationVariables = {slug: string}
-
-    /**
- * @summary Delete API communities by slug members me
- */
-export const useDeleteApiCommunitiesBySlugMembersMe = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommunitiesBySlugMembersMe>>, TError,DeleteApiCommunitiesBySlugMembersMeMutationVariables, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteApiCommunitiesBySlugMembersMe>>,
-        TError,
-        DeleteApiCommunitiesBySlugMembersMeMutationVariables,
-        TContext
-      > => {
-      return useMutation(getDeleteApiCommunitiesBySlugMembersMeMutationOptions(options), queryClient);
-    }
-    export type postApiCommunitiesBySlugMembersMeResponse200 = {
-  data: Join
-  status: 200
-}
-
-export type postApiCommunitiesBySlugMembersMeResponseDefault = {
-  data: ErrorModel
-  status: Exclude<HTTPStatusCodes, 200>
-}
-
-export type postApiCommunitiesBySlugMembersMeResponseSuccess = (postApiCommunitiesBySlugMembersMeResponse200) & {
-  headers: Headers;
-};
-export type postApiCommunitiesBySlugMembersMeResponseError = (postApiCommunitiesBySlugMembersMeResponseDefault) & {
-  headers: Headers;
-};
-
-export const getPostApiCommunitiesBySlugMembersMeUrl = (slug: string,) => {
-
-
-
-
-  return `/api/communities/${slug}/members/me`
-}
-
-/**
- * @summary Post API communities by slug members me
- */
-export const postApiCommunitiesBySlugMembersMe = async (slug: string, options?: RequestInit): Promise<postApiCommunitiesBySlugMembersMeResponseSuccess> => {
-
-  const res = await fetch(getPostApiCommunitiesBySlugMembersMeUrl(slug),
-  {
-    ...options,
-    method: 'POST'
-
-
-  }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  if (!res.ok) {
-
-    const err: globalThis.Error & {info?: postApiCommunitiesBySlugMembersMeResponseError['data'], status?: number} = new globalThis.Error();
-    const data : postApiCommunitiesBySlugMembersMeResponseError['data'] = body ? JSON.parse(body) : {}
-    err.info = data;
-    err.status = res.status;
-    throw err;
-  }
-  const data: postApiCommunitiesBySlugMembersMeResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiCommunitiesBySlugMembersMeResponseSuccess
-}
-
-
-
-
-
-export const getPostApiCommunitiesBySlugMembersMeMutationKey = () => ['postApiCommunitiesBySlugMembersMe'] as const;
-
-export const getPostApiCommunitiesBySlugMembersMeMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommunitiesBySlugMembersMe>>, TError,PostApiCommunitiesBySlugMembersMeMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiCommunitiesBySlugMembersMe>>, TError,PostApiCommunitiesBySlugMembersMeMutationVariables, TContext> => {
-
-const mutationKey = getPostApiCommunitiesBySlugMembersMeMutationKey();
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCommunitiesBySlugMembersMe>>, PostApiCommunitiesBySlugMembersMeMutationVariables> = (props) => {
-          const {slug} = props ?? {};
-
-          return  postApiCommunitiesBySlugMembersMe(slug,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostApiCommunitiesBySlugMembersMeMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommunitiesBySlugMembersMe>>>
-
-    export type PostApiCommunitiesBySlugMembersMeMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiCommunitiesBySlugMembersMeMutationVariables = {slug: string}
+    export type PutCommunitiesBySlugMembersMeMutationResult = NonNullable<Awaited<ReturnType<typeof putCommunitiesBySlugMembersMe>>>
+    export type PutCommunitiesBySlugMembersMeMutationBody = NonReadonly<PutMembershipInputBody>
+    export type PutCommunitiesBySlugMembersMeMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PutCommunitiesBySlugMembersMeMutationVariables = {slug: string;data: NonReadonly<PutMembershipInputBody>}
 
     /**
- * @summary Post API communities by slug members me
+ * @summary 设置当前用户的社区加入状态
  */
-export const usePostApiCommunitiesBySlugMembersMe = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommunitiesBySlugMembersMe>>, TError,PostApiCommunitiesBySlugMembersMeMutationVariables, TContext>, fetch?: RequestInit}
+export const usePutCommunitiesBySlugMembersMe = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putCommunitiesBySlugMembersMe>>, TError,PutCommunitiesBySlugMembersMeMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiCommunitiesBySlugMembersMe>>,
+        Awaited<ReturnType<typeof putCommunitiesBySlugMembersMe>>,
         TError,
-        PostApiCommunitiesBySlugMembersMeMutationVariables,
+        PutCommunitiesBySlugMembersMeMutationVariables,
         TContext
       > => {
-      return useMutation(getPostApiCommunitiesBySlugMembersMeMutationOptions(options), queryClient);
+      return useMutation(getPutCommunitiesBySlugMembersMeMutationOptions(options), queryClient);
     }
-    export type getApiCommunitiesBySlugPostsResponse200 = {
+    export type getCommunitiesBySlugPostsResponse200 = {
   data: ResultPost
   status: 200
 }
 
-export type getApiCommunitiesBySlugPostsResponseDefault = {
+export type getCommunitiesBySlugPostsResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type getApiCommunitiesBySlugPostsResponseSuccess = (getApiCommunitiesBySlugPostsResponse200) & {
+export type getCommunitiesBySlugPostsResponseSuccess = (getCommunitiesBySlugPostsResponse200) & {
   headers: Headers;
 };
-export type getApiCommunitiesBySlugPostsResponseError = (getApiCommunitiesBySlugPostsResponseDefault) & {
+export type getCommunitiesBySlugPostsResponseError = (getCommunitiesBySlugPostsResponseDefault) & {
   headers: Headers;
 };
 
-export const getGetApiCommunitiesBySlugPostsUrl = (slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams,) => {
+export const getGetCommunitiesBySlugPostsUrl = (slug: string,
+    params?: GetCommunitiesBySlugPostsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -1328,12 +1240,12 @@ export const getGetApiCommunitiesBySlugPostsUrl = (slug: string,
 }
 
 /**
- * @summary Get API communities by slug posts
+ * @summary 获取社区帖子列表
  */
-export const getApiCommunitiesBySlugPosts = async (slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams, options?: RequestInit): Promise<getApiCommunitiesBySlugPostsResponseSuccess> => {
+export const getCommunitiesBySlugPosts = async (slug: string,
+    params?: GetCommunitiesBySlugPostsParams, options?: RequestInit): Promise<getCommunitiesBySlugPostsResponseSuccess> => {
 
-  const res = await fetch(getGetApiCommunitiesBySlugPostsUrl(slug,params),
+  const res = await fetch(getGetCommunitiesBySlugPostsUrl(slug,params),
   {
     ...options,
     method: 'GET'
@@ -1346,89 +1258,89 @@ export const getApiCommunitiesBySlugPosts = async (slug: string,
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: getApiCommunitiesBySlugPostsResponseError['data'], status?: number} = new globalThis.Error();
-    const data : getApiCommunitiesBySlugPostsResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: getCommunitiesBySlugPostsResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getCommunitiesBySlugPostsResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: getApiCommunitiesBySlugPostsResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiCommunitiesBySlugPostsResponseSuccess
+  const data: getCommunitiesBySlugPostsResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCommunitiesBySlugPostsResponseSuccess
 }
 
 
 
 
 
-export const getGetApiCommunitiesBySlugPostsQueryKey = (slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams,) => {
+export const getGetCommunitiesBySlugPostsQueryKey = (slug: string,
+    params?: GetCommunitiesBySlugPostsParams,) => {
     return [
     `/api/communities/${slug}/posts`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiCommunitiesBySlugPostsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
+export const getGetCommunitiesBySlugPostsQueryOptions = <TData = Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
+    params?: GetCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitiesBySlugPostsQueryKey(slug,params);
+  const queryKey =  queryOptions?.queryKey ?? getGetCommunitiesBySlugPostsQueryKey(slug,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>> = ({ signal }) => getApiCommunitiesBySlugPosts(slug,params, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>> = ({ signal }) => getCommunitiesBySlugPosts(slug,params, { signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiCommunitiesBySlugPostsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>>
-export type GetApiCommunitiesBySlugPostsQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+export type GetCommunitiesBySlugPostsQueryResult = NonNullable<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>>
+export type GetCommunitiesBySlugPostsQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
 
 
-export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    params: undefined |  GetApiCommunitiesBySlugPostsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>> & Pick<
+    params: undefined |  GetCommunitiesBySlugPostsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>,
+          Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>
+          Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>> & Pick<
+    params?: GetCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>,
+          Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>
+          Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
+    params?: GetCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get API communities by slug posts
+ * @summary 获取社区帖子列表
  */
 
-export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    params?: GetApiCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
+    params?: GetCommunitiesBySlugPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPosts>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCommunitiesBySlugPostsQueryOptions(slug,params,options)
+  const queryOptions = getGetCommunitiesBySlugPostsQueryOptions(slug,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -1440,24 +1352,24 @@ export function useGetApiCommunitiesBySlugPosts<TData = Awaited<ReturnType<typeo
 
 
 
-export type postApiCommunitiesBySlugPostsResponse200 = {
+export type postCommunitiesBySlugPostsResponse200 = {
   data: Post
   status: 200
 }
 
-export type postApiCommunitiesBySlugPostsResponseDefault = {
+export type postCommunitiesBySlugPostsResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type postApiCommunitiesBySlugPostsResponseSuccess = (postApiCommunitiesBySlugPostsResponse200) & {
+export type postCommunitiesBySlugPostsResponseSuccess = (postCommunitiesBySlugPostsResponse200) & {
   headers: Headers;
 };
-export type postApiCommunitiesBySlugPostsResponseError = (postApiCommunitiesBySlugPostsResponseDefault) & {
+export type postCommunitiesBySlugPostsResponseError = (postCommunitiesBySlugPostsResponseDefault) & {
   headers: Headers;
 };
 
-export const getPostApiCommunitiesBySlugPostsUrl = (slug: string,) => {
+export const getPostCommunitiesBySlugPostsUrl = (slug: string,) => {
 
 
 
@@ -1466,10 +1378,10 @@ export const getPostApiCommunitiesBySlugPostsUrl = (slug: string,) => {
 }
 
 /**
- * @summary Post API communities by slug posts
+ * @summary 创建帖子
  */
-export const postApiCommunitiesBySlugPosts = async (slug: string,
-    createPost: NonReadonly<CreatePost>, options?: RequestInit): Promise<postApiCommunitiesBySlugPostsResponseSuccess> => {
+export const postCommunitiesBySlugPosts = async (slug: string,
+    createPost: NonReadonly<CreatePost>, options?: RequestInit): Promise<postCommunitiesBySlugPostsResponseSuccess> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -1485,7 +1397,7 @@ export const postApiCommunitiesBySlugPosts = async (slug: string,
     }
     return headers;
   };
-const res = await fetch(getPostApiCommunitiesBySlugPostsUrl(slug),
+const res = await fetch(getPostCommunitiesBySlugPostsUrl(slug),
   {
     ...options,
     method: 'POST',
@@ -1498,27 +1410,27 @@ const res = await fetch(getPostApiCommunitiesBySlugPostsUrl(slug),
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: postApiCommunitiesBySlugPostsResponseError['data'], status?: number} = new globalThis.Error();
-    const data : postApiCommunitiesBySlugPostsResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: postCommunitiesBySlugPostsResponseError['data'], status?: number} = new globalThis.Error();
+    const data : postCommunitiesBySlugPostsResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: postApiCommunitiesBySlugPostsResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiCommunitiesBySlugPostsResponseSuccess
+  const data: postCommunitiesBySlugPostsResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCommunitiesBySlugPostsResponseSuccess
 }
 
 
 
 
 
-export const getPostApiCommunitiesBySlugPostsMutationKey = () => ['postApiCommunitiesBySlugPosts'] as const;
+export const getPostCommunitiesBySlugPostsMutationKey = () => ['postCommunitiesBySlugPosts'] as const;
 
-export const getPostApiCommunitiesBySlugPostsMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>, TError,PostApiCommunitiesBySlugPostsMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>, TError,PostApiCommunitiesBySlugPostsMutationVariables, TContext> => {
+export const getPostCommunitiesBySlugPostsMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postCommunitiesBySlugPosts>>, TError,PostCommunitiesBySlugPostsMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof postCommunitiesBySlugPosts>>, TError,PostCommunitiesBySlugPostsMutationVariables, TContext> => {
 
-const mutationKey = getPostApiCommunitiesBySlugPostsMutationKey();
+const mutationKey = getPostCommunitiesBySlugPostsMutationKey();
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -1528,10 +1440,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>, PostApiCommunitiesBySlugPostsMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postCommunitiesBySlugPosts>>, PostCommunitiesBySlugPostsMutationVariables> = (props) => {
           const {slug,data} = props ?? {};
 
-          return  postApiCommunitiesBySlugPosts(slug,data,fetchOptions)
+          return  postCommunitiesBySlugPosts(slug,data,fetchOptions)
         }
 
 
@@ -1541,42 +1453,42 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiCommunitiesBySlugPostsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>>
-    export type PostApiCommunitiesBySlugPostsMutationBody = NonReadonly<CreatePost>
-    export type PostApiCommunitiesBySlugPostsMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
-    export type PostApiCommunitiesBySlugPostsMutationVariables = {slug: string;data: NonReadonly<CreatePost>}
+    export type PostCommunitiesBySlugPostsMutationResult = NonNullable<Awaited<ReturnType<typeof postCommunitiesBySlugPosts>>>
+    export type PostCommunitiesBySlugPostsMutationBody = NonReadonly<CreatePost>
+    export type PostCommunitiesBySlugPostsMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PostCommunitiesBySlugPostsMutationVariables = {slug: string;data: NonReadonly<CreatePost>}
 
     /**
- * @summary Post API communities by slug posts
+ * @summary 创建帖子
  */
-export const usePostApiCommunitiesBySlugPosts = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>, TError,PostApiCommunitiesBySlugPostsMutationVariables, TContext>, fetch?: RequestInit}
+export const usePostCommunitiesBySlugPosts = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postCommunitiesBySlugPosts>>, TError,PostCommunitiesBySlugPostsMutationVariables, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiCommunitiesBySlugPosts>>,
+        Awaited<ReturnType<typeof postCommunitiesBySlugPosts>>,
         TError,
-        PostApiCommunitiesBySlugPostsMutationVariables,
+        PostCommunitiesBySlugPostsMutationVariables,
         TContext
       > => {
-      return useMutation(getPostApiCommunitiesBySlugPostsMutationOptions(options), queryClient);
+      return useMutation(getPostCommunitiesBySlugPostsMutationOptions(options), queryClient);
     }
-    export type getApiCommunitiesBySlugPostsByPostIdResponse200 = {
+    export type getCommunitiesBySlugPostsByPostIdResponse200 = {
   data: Post
   status: 200
 }
 
-export type getApiCommunitiesBySlugPostsByPostIdResponseDefault = {
+export type getCommunitiesBySlugPostsByPostIdResponseDefault = {
   data: ErrorModel
   status: Exclude<HTTPStatusCodes, 200>
 }
 
-export type getApiCommunitiesBySlugPostsByPostIdResponseSuccess = (getApiCommunitiesBySlugPostsByPostIdResponse200) & {
+export type getCommunitiesBySlugPostsByPostIdResponseSuccess = (getCommunitiesBySlugPostsByPostIdResponse200) & {
   headers: Headers;
 };
-export type getApiCommunitiesBySlugPostsByPostIdResponseError = (getApiCommunitiesBySlugPostsByPostIdResponseDefault) & {
+export type getCommunitiesBySlugPostsByPostIdResponseError = (getCommunitiesBySlugPostsByPostIdResponseDefault) & {
   headers: Headers;
 };
 
-export const getGetApiCommunitiesBySlugPostsByPostIdUrl = (slug: string,
+export const getGetCommunitiesBySlugPostsByPostIdUrl = (slug: string,
     postId: string,) => {
 
 
@@ -1586,12 +1498,12 @@ export const getGetApiCommunitiesBySlugPostsByPostIdUrl = (slug: string,
 }
 
 /**
- * @summary Get API communities by slug posts by post ID
+ * @summary 获取帖子详情
  */
-export const getApiCommunitiesBySlugPostsByPostId = async (slug: string,
-    postId: string, options?: RequestInit): Promise<getApiCommunitiesBySlugPostsByPostIdResponseSuccess> => {
+export const getCommunitiesBySlugPostsByPostId = async (slug: string,
+    postId: string, options?: RequestInit): Promise<getCommunitiesBySlugPostsByPostIdResponseSuccess> => {
 
-  const res = await fetch(getGetApiCommunitiesBySlugPostsByPostIdUrl(slug,postId),
+  const res = await fetch(getGetCommunitiesBySlugPostsByPostIdUrl(slug,postId),
   {
     ...options,
     method: 'GET'
@@ -1604,21 +1516,21 @@ export const getApiCommunitiesBySlugPostsByPostId = async (slug: string,
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   if (!res.ok) {
 
-    const err: globalThis.Error & {info?: getApiCommunitiesBySlugPostsByPostIdResponseError['data'], status?: number} = new globalThis.Error();
-    const data : getApiCommunitiesBySlugPostsByPostIdResponseError['data'] = body ? JSON.parse(body) : {}
+    const err: globalThis.Error & {info?: getCommunitiesBySlugPostsByPostIdResponseError['data'], status?: number} = new globalThis.Error();
+    const data : getCommunitiesBySlugPostsByPostIdResponseError['data'] = body ? JSON.parse(body) : {}
     err.info = data;
     err.status = res.status;
     throw err;
   }
-  const data: getApiCommunitiesBySlugPostsByPostIdResponseSuccess['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiCommunitiesBySlugPostsByPostIdResponseSuccess
+  const data: getCommunitiesBySlugPostsByPostIdResponseSuccess['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCommunitiesBySlugPostsByPostIdResponseSuccess
 }
 
 
 
 
 
-export const getGetApiCommunitiesBySlugPostsByPostIdQueryKey = (slug: string,
+export const getGetCommunitiesBySlugPostsByPostIdQueryKey = (slug: string,
     postId: string,) => {
     return [
     `/api/communities/${slug}/posts/${postId}`
@@ -1626,67 +1538,67 @@ export const getGetApiCommunitiesBySlugPostsByPostIdQueryKey = (slug: string,
     }
 
 
-export const getGetApiCommunitiesBySlugPostsByPostIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
-    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetCommunitiesBySlugPostsByPostIdQueryOptions = <TData = Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(slug: string,
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCommunitiesBySlugPostsByPostIdQueryKey(slug,postId);
+  const queryKey =  queryOptions?.queryKey ?? getGetCommunitiesBySlugPostsByPostIdQueryKey(slug,postId);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>> = ({ signal }) => getApiCommunitiesBySlugPostsByPostId(slug,postId, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>> = ({ signal }) => getCommunitiesBySlugPostsByPostId(slug,postId, { signal, ...fetchOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined && postId !== null && postId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: slug !== null && slug !== undefined && postId !== null && postId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiCommunitiesBySlugPostsByPostIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>>
-export type GetApiCommunitiesBySlugPostsByPostIdQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
+export type GetCommunitiesBySlugPostsByPostIdQueryResult = NonNullable<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>>
+export type GetCommunitiesBySlugPostsByPostIdQueryError = globalThis.Error & { info?: ErrorModel; status?: number }
 
 
-export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    postId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>> & Pick<
+    postId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>,
+          Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>
+          Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>> & Pick<
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>,
+          Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>,
           TError,
-          Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>
+          Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get API communities by slug posts by post ID
+ * @summary 获取帖子详情
  */
 
-export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
+export function useGetCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError = globalThis.Error & { info?: ErrorModel; status?: number }>(
  slug: string,
-    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
+    postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommunitiesBySlugPostsByPostId>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCommunitiesBySlugPostsByPostIdQueryOptions(slug,postId,options)
+  const queryOptions = getGetCommunitiesBySlugPostsByPostIdQueryOptions(slug,postId,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -1698,3 +1610,111 @@ export function useGetApiCommunitiesBySlugPostsByPostId<TData = Awaited<ReturnTy
 
 
 
+export type putUserAvatarResponse204 = {
+  data: void
+  status: 204
+}
+
+export type putUserAvatarResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+
+export type putUserAvatarResponseSuccess = (putUserAvatarResponse204) & {
+  headers: Headers;
+};
+export type putUserAvatarResponseError = (putUserAvatarResponseDefault) & {
+  headers: Headers;
+};
+
+export const getPutUserAvatarUrl = () => {
+
+
+
+
+  return `/api/user/me/avatar`
+}
+
+/**
+ * @summary 更新当前用户头像
+ */
+export const putUserAvatar = async (putUserAvatarBody?: PutUserAvatarBody, options?: RequestInit): Promise<putUserAvatarResponseSuccess> => {
+    const formData = new FormData();
+if(putUserAvatarBody?.image !== undefined) {
+ formData.append(`image`, putUserAvatarBody.image);
+ }
+
+  const res = await fetch(getPutUserAvatarUrl(),
+  {
+    ...options,
+    method: 'PUT'
+    ,
+    body: formData
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  if (!res.ok) {
+
+    const err: globalThis.Error & {info?: putUserAvatarResponseError['data'], status?: number} = new globalThis.Error();
+    const data : putUserAvatarResponseError['data'] = body ? JSON.parse(body) : {}
+    err.info = data;
+    err.status = res.status;
+    throw err;
+  }
+  const data: putUserAvatarResponseSuccess['data'] = body ? JSON.parse(body) : undefined
+  return { data, status: res.status, headers: res.headers } as putUserAvatarResponseSuccess
+}
+
+
+
+
+
+export const getPutUserAvatarMutationKey = () => ['putUserAvatar'] as const;
+
+export const getPutUserAvatarMutationOptions = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserAvatar>>, TError,PutUserAvatarMutationVariables, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof putUserAvatar>>, TError,PutUserAvatarMutationVariables, TContext> => {
+
+const mutationKey = getPutUserAvatarMutationKey();
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putUserAvatar>>, PutUserAvatarMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  putUserAvatar(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutUserAvatarMutationResult = NonNullable<Awaited<ReturnType<typeof putUserAvatar>>>
+    export type PutUserAvatarMutationBody = PutUserAvatarBody | undefined
+    export type PutUserAvatarMutationError = globalThis.Error & { info?: ErrorModel; status?: number }
+    export type PutUserAvatarMutationVariables = {data?: PutUserAvatarBody}
+
+    /**
+ * @summary 更新当前用户头像
+ */
+export const usePutUserAvatar = <TError = globalThis.Error & { info?: ErrorModel; status?: number },
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUserAvatar>>, TError,PutUserAvatarMutationVariables, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putUserAvatar>>,
+        TError,
+        PutUserAvatarMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPutUserAvatarMutationOptions(options), queryClient);
+    }

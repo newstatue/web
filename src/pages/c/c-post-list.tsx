@@ -2,7 +2,7 @@ import { CPostActions } from "./c-post-actions"
 import removeMarkdown from "remove-markdown"
 import { Button, Card, Spinner } from "@heroui/react"
 import { Link } from "@/components/link"
-import { useGetApiCommunitiesBySlugPosts } from "@/gen/api"
+import { useGetCommunitiesBySlugPosts } from "@/gen/api"
 import {
     ShareFatIcon,
 
@@ -14,7 +14,7 @@ type CPostListProps = {
 }
 
 export function CPostList({ slug }: CPostListProps) {
-    const { data, isPending, isError } = useGetApiCommunitiesBySlugPosts(
+    const { data, isPending, isError } = useGetCommunitiesBySlugPosts(
         slug,
         {
             page: 1,

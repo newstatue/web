@@ -1,6 +1,6 @@
 import { CPostActions } from "./c-post-actions"
 import {Card} from "@heroui/react"
-import { useGetApiCommunitiesBySlugPostsByPostId } from "@/gen/api"
+import { useGetCommunitiesBySlugPostsByPostId } from "@/gen/api"
 import {Markdown} from "@/components/markdown.tsx";
 
 type CPProps = {
@@ -9,7 +9,7 @@ type CPProps = {
 }
 
 export function CP({ slug, postId }: CPProps) {
-    const { data, isPending, isError } = useGetApiCommunitiesBySlugPostsByPostId(slug, postId)
+    const { data, isPending, isError } = useGetCommunitiesBySlugPostsByPostId(slug, postId)
 
     if (isPending) {
         return <div>加载中...</div>

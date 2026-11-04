@@ -1,5 +1,5 @@
 import {Button, Card, FieldError, Form, Input, Label, TextField, toast} from "@heroui/react";
-import {usePostApiAuthLogin} from "@/gen/api";
+import {usePostAuthLogin} from "@/gen/api";
 import {toValidationErrors} from "@/lib/error.ts";
 import {useState} from "react";
 import {Link} from "@/components/link.tsx";
@@ -7,7 +7,7 @@ import {Link} from "@/components/link.tsx";
 export function Login() {
     const [errors, setErrors] = useState<Record<string, string>>({})
 
-    const login =  usePostApiAuthLogin({
+    const login =  usePostAuthLogin({
         mutation:{
             onSuccess: async() =>{
                 toast.success("登录成功!");

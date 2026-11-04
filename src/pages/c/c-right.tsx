@@ -1,5 +1,5 @@
 import { Card, Spinner } from "@heroui/react"
-import { useGetApiCommunitiesBySlug } from "@/gen/api"
+import { useGetCommunitiesBySlug } from "@/gen/api"
 import {
     InfoIcon,
     UsersIcon,
@@ -11,7 +11,7 @@ type CRightProps = {
 
 export function CRight({ slug }: CRightProps) {
     const { data, isPending, isError } =
-        useGetApiCommunitiesBySlug(slug)
+        useGetCommunitiesBySlug(slug)
 
     if (isPending) {
         return <Spinner />

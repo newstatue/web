@@ -1,7 +1,7 @@
-import {useGetApiAuthMe} from "@/gen/api";
+import {useGetAuthMe} from "@/gen/api";
 
 export function useAuth() {
-    const query = useGetApiAuthMe({
+    const query = useGetAuthMe({
         query: {
             retry: false,
             staleTime: 60_000,

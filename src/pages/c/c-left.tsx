@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { HouseIcon } from "@phosphor-icons/react"
 import { Button, Spinner } from "@heroui/react"
 import { useQuery } from "@tanstack/react-query"
-import { getApiCommunities, getGetApiCommunitiesQueryKey } from "@/gen/api"
+import { getCommunities, getGetCommunitiesQueryKey } from "@/gen/api"
 import type { Community } from "@/gen/api/models"
 
 type CLeftProps = {
@@ -11,12 +11,12 @@ type CLeftProps = {
 
 export function CLeft({ slug }: CLeftProps) {
     const { data: communities = [], isPending, isError, refetch } = useQuery({
-        queryKey: [...getGetApiCommunitiesQueryKey(), "all"],
+        queryKey: [...getGetCommunitiesQueryKey(), "all"],
         queryFn: async ({ signal }) => {
             const communities: Community[] = []
 
             for (let page = 1; ; page++) {
-                const { data } = await getApiCommunities({ page, limit: 100 }, { signal })
+                const { data } = await getCommunities({ page, limit: 100 }, { signal })
                 const items = data.items ?? []
                 communities.push(...items)
 

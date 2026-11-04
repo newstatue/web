@@ -1,7 +1,7 @@
 import { Button, ButtonGroup } from "@heroui/react"
 import { BookmarkSimpleIcon, ThumbsDownIcon, ThumbsUpIcon } from "@phosphor-icons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { getGetApiCommunitiesBySlugPostsQueryKey, getGetApiCommunitiesBySlugPostsByPostIdQueryKey, usePutApiCommunitiesPostsByPostIdBookmark, usePutApiCommunitiesPostsByPostIdVote } from "@/gen/api"
+import { getGetCommunitiesBySlugPostsQueryKey, getGetCommunitiesBySlugPostsByPostIdQueryKey, usePutCommunitiesPostsByPostIdBookmark, usePutCommunitiesPostsByPostIdVote } from "@/gen/api"
 
 function formatVoteCount(count: number): string {
     if (Math.abs(count) < 10000) return String(count)
@@ -23,20 +23,20 @@ export function CPostActions({ postId, slug, voteCount }: { postId: string; slug
         enabled: false,
         gcTime: Infinity,
     })
-    const vote = usePutApiCommunitiesPostsByPostIdVote({
+    const vote = usePutCommunitiesPostsByPostIdVote({
         mutation: {
             onSuccess: async (_, variables) => {
                 client.setQueryData<Interaction>(queryKey, (previous = initialState) => ({
                     ...previous, vote: variables.data.value,
                 }))
                 await Promise.all([
-                    client.invalidateQueries({ queryKey: getGetApiCommunitiesBySlugPostsQueryKey(slug) }),
-                    client.invalidateQueries({ queryKey: getGetApiCommunitiesBySlugPostsByPostIdQueryKey(slug, postId) }),
+                    client.invalidateQueries({ queryKey: getGetCommunitiesBySlugPostsQueryKey(slug) }),
+                    client.invalidateQueries({ queryKey: getGetCommunitiesBySlugPostsByPostIdQueryKey(slug, postId) }),
                 ])
             },
         },
     })
-    const bookmark = usePutApiCommunitiesPostsByPostIdBookmark({
+    const bookmark = usePutCommunitiesPostsByPostIdBookmark({
         mutation: {
             onSuccess: async (_, variables) => {
                 client.setQueryData<Interaction>(queryKey, (previous = initialState) => ({
